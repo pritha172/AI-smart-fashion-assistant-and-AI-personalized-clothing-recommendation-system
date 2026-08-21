@@ -1,0 +1,19 @@
+Internship project steps to run
+Step 1: Open Terminal 
+
+Step 2: Navigate to the Project Folder
+Use the cd command to change directories into your downloaded project folder. For example, if it's on your Desktop:
+
+Bash
+cd Folder Path
+(Replace Folder Path with the actual folder path).
+
+Step 3: Start the Server
+Run the following command in your terminal:
+python server.py
+You should see a message in the terminal that says:
+Server running on [http://127.0.0.1:8000](http://127.0.0.1:8000)...
+
+Step 4: Open in Your Browser
+Open Chrome, Edge, Safari, or Firefox.
+Go to: http://127.0.0.1:8000
