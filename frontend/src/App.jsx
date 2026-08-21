@@ -21,7 +21,7 @@ function App() {
 
   return (
 
-    <BrowserRouter>
+    <BrowserRouter basename="/AI-smart-fashion-assistant-and-AI-personalized-clothing-recommendation-system">
 
       <Routes>
 
