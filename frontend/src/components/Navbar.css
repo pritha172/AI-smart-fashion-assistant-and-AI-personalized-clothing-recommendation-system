@@ -1,0 +1,384 @@
+/* =========================================================
+   AI SMART FASHION
+   MODERN NAVBAR
+   ========================================================= */
+
+.navbar {
+
+    width: 100%;
+
+    min-height: 76px;
+
+    padding: 0 5%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    border-bottom: 1px solid #eee4df;
+
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1000;
+
+    backdrop-filter: blur(12px);
+
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.fashion-logo {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+}
+
+
+.logo-main {
+
+    font-size: 22px;
+
+    font-weight: 800;
+
+    letter-spacing: -0.8px;
+
+    color: #171717;
+
+}
+
+
+.logo-sub {
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+    color: #b47c6e;
+
+    padding-top: 7px;
+
+}
+
+
+/* =========================================================
+   NAVIGATION LINKS
+   ========================================================= */
+
+.nav-links {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+}
+
+
+.nav-links a {
+
+    position: relative;
+
+    padding: 10px 13px;
+
+    color: #4b4b4b;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    border-radius: 8px;
+
+    transition:
+        color 0.25s ease,
+        background 0.25s ease;
+}
+
+
+/* Hover background */
+
+.nav-links a:hover {
+
+    color: #a96f61;
+
+    background: #faf4f1;
+
+}
+
+
+/* Animated underline */
+
+.nav-links a:not(.register-btn):not(.profile-icon)::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 13px;
+
+    right: 13px;
+
+    bottom: 5px;
+
+    height: 2px;
+
+    background: #c58b7b;
+
+    transform: scaleX(0);
+
+    transform-origin: center;
+
+    transition: transform 0.25s ease;
+
+}
+
+
+.nav-links a:not(.register-btn):not(.profile-icon):hover::after {
+
+    transform: scaleX(1);
+
+}
+
+
+/* =========================================================
+   GET STARTED BUTTON
+   ========================================================= */
+
+.register-btn {
+
+    margin-left: 8px;
+
+    padding: 11px 20px !important;
+
+    color: white !important;
+
+    background: #171717;
+
+    border-radius: 25px !important;
+
+    font-weight: 600 !important;
+
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+
+}
+
+
+.register-btn:hover {
+
+    color: white !important;
+
+    background: #a96f61 !important;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(169, 111, 97, 0.25);
+
+}
+
+
+/* =========================================================
+   PROFILE ICON
+   ========================================================= */
+
+.profile-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    margin-left: 8px;
+
+    padding: 0 !important;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f4ece8;
+
+    border: 1px solid #eadbd5;
+
+    border-radius: 50% !important;
+
+    font-size: 19px !important;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.profile-icon:hover {
+
+    background: #eadbd5 !important;
+
+    transform: translateY(-2px) scale(1.05);
+
+    box-shadow:
+        0 6px 15px rgba(0, 0, 0, 0.1);
+
+}
+
+
+/* Remove underline from profile */
+
+.profile-icon::after {
+
+    display: none !important;
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    .navbar {
+
+        padding: 0 25px;
+
+    }
+
+    .nav-links {
+
+        gap: 0;
+
+    }
+
+    .nav-links a {
+
+        padding: 9px 8px;
+
+        font-size: 13px;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .navbar {
+
+        min-height: auto;
+
+        padding: 15px 20px;
+
+        flex-direction: column;
+
+        gap: 15px;
+
+    }
+
+
+    .nav-links {
+
+        width: 100%;
+
+        justify-content: center;
+
+        flex-wrap: wrap;
+
+        gap: 3px;
+
+    }
+
+
+    .nav-links a {
+
+        font-size: 13px;
+
+        padding: 8px 9px;
+
+    }
+
+
+    .register-btn {
+
+        margin-left: 3px;
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 500px) {
+
+    .logo-main {
+
+        font-size: 20px;
+
+    }
+
+
+    .logo-sub {
+
+        font-size: 9px;
+
+        letter-spacing: 2px;
+
+    }
+
+
+    .nav-links {
+
+        gap: 2px;
+
+    }
+
+
+    .nav-links a {
+
+        font-size: 12px;
+
+        padding: 7px 6px;
+
+    }
+
+
+    .profile-icon {
+
+        width: 38px;
+
+        height: 38px;
+
+    }
+
+}

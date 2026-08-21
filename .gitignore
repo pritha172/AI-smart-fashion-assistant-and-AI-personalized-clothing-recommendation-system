@@ -1,0 +1,23 @@
+# Python
+venv/
+backend/venv/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+.env.*
+
+# Node
+frontend/node_modules/
+backend/node_modules/
+frontend/dist/
+
+# Uploads / generated files
+backend/uploads/
+
+# Large/local project files
+backend.zip
+frontend.zip
+dataset/
+documentation/

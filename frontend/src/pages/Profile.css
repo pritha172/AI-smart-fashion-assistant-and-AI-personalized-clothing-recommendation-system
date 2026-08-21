@@ -1,0 +1,167 @@
+.profile-page {
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  background: #ffffff;
+}
+
+.profile-loading {
+  font-size: 14px;
+  color: #888;
+}
+
+.profile-card {
+  width: 100%;
+  max-width: 640px;
+  background: #ffffff;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(153, 53, 86, 0.08);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(135deg, #f4c0d1, #cecbf6);
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 20px;
+  color: #993556;
+  flex-shrink: 0;
+}
+
+.profile-name {
+  font-weight: 600;
+  font-size: 20px;
+  margin: 0;
+  color: #4b1528;
+}
+
+.profile-email {
+  font-size: 14px;
+  color: #72243e;
+  margin: 4px 0 0;
+}
+
+.profile-body {
+  padding: 1.5rem;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.stat-pink {
+  background: #fbeaf0;
+}
+
+.stat-purple {
+  background: #eeedfe;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+  color: #4b1528;
+}
+
+.stat-purple .stat-value {
+  color: #26215c;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #72243e;
+  margin: 2px 0 0;
+}
+
+.stat-purple .stat-label {
+  color: #3c3489;
+}
+
+.section-label {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 8px;
+}
+
+.info-list {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+}
+
+.info-row:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}
+
+.info-key {
+  font-size: 14px;
+  color: #666;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #222;
+}
+
+.badge-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.badge {
+  background: linear-gradient(135deg, #f4c0d1, #cecbf6);
+  color: #4b1528;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.logout-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #d4537e, #7f77dd);
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.logout-btn:hover {
+  opacity: 0.9;
+}

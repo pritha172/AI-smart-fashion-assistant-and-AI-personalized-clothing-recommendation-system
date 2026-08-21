@@ -1,0 +1,11 @@
+body_shape,skin_tone,gender,age,favorite_color,occasion,weather,recommended_product
+Rectangle,Medium,Female,20,Black,Party,Summer,Dress
+Oval,Fair,Female,22,Blue,Casual,Winter,Jacket
+Round,Light,Female,21,Red,Party,Summer,Gown
+Square,Medium,Male,23,Black,Office,Winter,Formal Shirt
+Rectangle,Brown,Male,25,White,Casual,Summer,T Shirt
+Oval,Medium,Female,24,Pink,Party,Winter,Sweater
+Round,Fair,Female,19,Yellow,Casual,Summer,Top
+Square,Dark,Male,27,Blue,Office,Winter,Blazer
+Rectangle,Light,Female,20,Green,Casual,Summer,Jeans
+Oval,Medium,Male,26,Grey,Office,Winter,Coat

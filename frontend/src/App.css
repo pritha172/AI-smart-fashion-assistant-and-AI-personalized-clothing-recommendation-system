@@ -1,0 +1,133 @@
+/* =========================================================
+   APP LEVEL STYLES
+   ========================================================= */
+
+#root {
+    min-height: 100vh;
+
+    width: 100%;
+}
+
+
+/* =========================
+   PAGE TRANSITION
+   ========================= */
+
+.page {
+    animation: pageFade 0.35s ease;
+}
+
+
+@keyframes pageFade {
+
+    from {
+        opacity: 0;
+
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0);
+    }
+
+}
+
+
+/* =========================
+   COMMON TITLE
+   ========================= */
+
+.page-title {
+    text-align: center;
+
+    margin-bottom: 40px;
+}
+
+
+.page-title h1 {
+    margin-bottom: 8px;
+
+    font-size: 38px;
+
+    font-weight: 750;
+}
+
+
+.page-title p {
+    color: #777;
+
+    margin: 0;
+}
+
+
+/* =========================
+   BADGE
+   ========================= */
+
+.badge {
+    display: inline-block;
+
+    padding: 5px 12px;
+
+    border-radius: 20px;
+
+    background: #f2e5df;
+
+    color: #9a6557;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+/* =========================
+   LOADING
+   ========================= */
+
+.loading {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    min-height: 200px;
+
+    color: #777;
+}
+
+
+/* =========================
+   EMPTY STATE
+   ========================= */
+
+.empty-state {
+    max-width: 500px;
+
+    margin: 50px auto;
+
+    padding: 45px 25px;
+
+    text-align: center;
+
+    background: white;
+
+    border: 1px solid #e7dfdb;
+
+    border-radius: 20px;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
+
+.empty-state h2 {
+    margin-bottom: 8px;
+}
+
+
+.empty-state p {
+    color: #777;
+}
