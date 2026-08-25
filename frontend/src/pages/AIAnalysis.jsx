@@ -120,27 +120,82 @@ function AIAnalysis() {
 
         try {
 
-            const formData =
-                new FormData();
+            const location = await getUserLocation();
+
+const savedUser =
+    localStorage.getItem("user");
+
+let userId = null;
+
+if (savedUser) {
+
+    try {
+
+        const user = JSON.parse(savedUser);
+
+        userId = user.id;
+
+    } catch (error) {
+
+        console.log(
+            "Unable to read user information"
+        );
+
+    }
+}
 
 
-            formData.append(
-                "file",
-                image
-            );
+const formData = new FormData();
+
+formData.append(
+    "file",
+    file
+);
+
+if (userId) {
+
+    formData.append(
+        "user_id",
+        userId
+    );
+}
+
+// Get logged-in user
+
+if (savedUser) {
+    const user = JSON.parse(savedUser);
+
+    if (user.id) {
+        // your existing code
+    }
+}
+
+if (location.latitude !== null) {
+
+    formData.append(
+        "latitude",
+        location.latitude
+    );
+
+}
+
+if (location.longitude !== null) {
+
+    formData.append(
+        "longitude",
+        location.longitude
+    );
+}
 
 
-            formData.append(
-                "user_id",
-                user.id.toString()
-            );
+const response = await API.post(
+    "/ai/analyze",
+    formData
+);
 
-
-            const response =
-                await API.post(
-                    "/ai/analyze",
-                    formData
-                );
+setResult(
+    response.data
+);
 
 
             console.log(
@@ -345,8 +400,269 @@ function AIAnalysis() {
                         </h2>
 
                     </div>
-                   
 
+                    {result && result.todays_look && (
+
+    <div
+        style={{
+            marginTop: "30px",
+            padding: "25px",
+            border: "1px solid #ddd",
+            borderRadius: "15px",
+            background: "#fff"
+        }}
+    >
+
+        <h2>
+            👗 Today's Look
+        </h2>
+
+
+        {/* WEATHER */}
+
+        {result.weather && (
+
+            <div
+                style={{
+                    marginBottom: "20px"
+                }}
+            >
+
+                <h3>
+                    🌤️ Today's Weather
+                </h3>
+
+                <p>
+                    <strong>
+                        Condition:
+                    </strong>{" "}
+
+                    {result.weather.condition}
+                </p>
+
+                {result.weather.temperature !== null && (
+
+                    <p>
+
+                        <strong>
+                            Temperature:
+                        </strong>{" "}
+
+                        {result.weather.temperature}
+                        °C
+
+                    </p>
+
+                )}
+
+            </div>
+
+        )}
+
+
+        {/* PERSONALIZED STYLE */}
+
+        <h3>
+            ✨ Recommended For You
+        </h3>
+
+        <p>
+
+            <strong>
+                Body Shape:
+            </strong>{" "}
+
+            {result.body_shape}
+
+        </p>
+
+        <p>
+
+            <strong>
+                Face Shape:
+            </strong>{" "}
+
+            {result.face_shape}
+
+        </p>
+
+        <p>
+
+            <strong>
+                Skin Tone:
+            </strong>{" "}
+
+            {result.skin_tone}
+
+        </p>
+
+
+        {/* COLORS */}
+
+        <p>
+
+            <strong>
+                Colors that suit you:
+            </strong>{" "}
+
+            {result.preferred_colors?.join(", ")}
+
+        </p>
+
+
+        {/* TOP STYLES */}
+
+        <p>
+
+            <strong>
+                Suitable Top Styles:
+            </strong>{" "}
+
+            {result.recommended_top_styles?.join(", ")}
+
+        </p>
+
+
+        {/* NECKLINES */}
+
+        <p>
+
+            <strong>
+                Suitable Necklines:
+            </strong>{" "}
+
+            {result.recommended_necklines?.join(", ")}
+
+        </p>
+
+
+        {/* OUTFIT */}
+
+        <h3>
+            👕 Your Wardrobe Outfit
+        </h3>
+
+
+        {result.todays_look.type === "top_bottom" && (
+
+            <div>
+
+                <p>
+                    <strong>
+                        Top:
+                    </strong>{" "}
+
+                    {result.todays_look.top?.category}
+
+                    {" - "}
+
+                    {result.todays_look.top?.color}
+
+                </p>
+
+
+                <p>
+                    <strong>
+                        Bottom:
+                    </strong>{" "}
+
+                    {result.todays_look.bottom?.category}
+
+                    {" - "}
+
+                    {result.todays_look.bottom?.color}
+
+                </p>
+
+
+                {result.todays_look.shoes && (
+
+                    <p>
+
+                        <strong>
+                            Shoes:
+                        </strong>{" "}
+
+                        {result.todays_look.shoes.category}
+
+                        {" - "}
+
+                        {result.todays_look.shoes.color}
+
+                    </p>
+
+                )}
+
+            </div>
+
+        )}
+
+
+        {result.todays_look.type === "dress" && (
+
+            <div>
+
+                <p>
+
+                    <strong>
+                        Dress:
+                    </strong>{" "}
+
+                    {result.todays_look.dress.category}
+
+                    {" - "}
+
+                    {result.todays_look.dress.color}
+
+                </p>
+
+
+                {result.todays_look.shoes && (
+
+                    <p>
+
+                        <strong>
+                            Shoes:
+                        </strong>{" "}
+
+                        {result.todays_look.shoes.category}
+
+                        {" - "}
+
+                        {result.todays_look.shoes.color}
+
+                    </p>
+
+                )}
+
+            </div>
+
+        )}
+
+
+        {/* REASONS */}
+
+        <h3>
+            💡 Why this look is recommended
+        </h3>
+
+        <ul>
+
+            {result.reasons?.map(
+                (reason, index) => (
+
+                    <li key={index}>
+                        {reason}
+                    </li>
+
+                )
+            )}
+
+        </ul>
+
+    </div>
+
+)}
 
                     {/* =================================
                         ANALYSIS CARDS
@@ -829,7 +1145,7 @@ function AIAnalysis() {
 
 
                     
-{/* =================================
+                    {/* =================================
                         REAL PRODUCTS
                     ================================= */}
                     {result.products && result.products.length > 0 && (
@@ -868,11 +1184,68 @@ function AIAnalysis() {
                             </div>
                         </section>
                     )}
+                     
 
                 </section>
             )}
         </div>
     );
+
+    
+    const getUserLocation = () => {
+
+    return new Promise((resolve) => {
+
+        if (!navigator.geolocation) {
+
+            resolve({
+                latitude: null,
+                longitude: null
+            });
+
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+
+            (position) => {
+
+                resolve({
+                    latitude:
+                        position.coords.latitude,
+
+                    longitude:
+                        position.coords.longitude
+                });
+
+            },
+
+            (error) => {
+
+                console.log(
+                    "Location permission denied:",
+                    error
+                );
+
+                resolve({
+                    latitude: null,
+                    longitude: null
+                });
+
+            },
+
+            {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 300000
+            }
+        );
+
+    });
 };
+
+
+};
+    
 
 export default AIAnalysis;

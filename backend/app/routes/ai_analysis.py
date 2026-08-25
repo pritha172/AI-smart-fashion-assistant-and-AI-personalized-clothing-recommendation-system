@@ -1,6 +1,7 @@
 import sys
 import os
 
+
 sys.path.append(
     os.path.abspath(
         os.path.join(
@@ -10,7 +11,7 @@ sys.path.append(
     )
 )
 
-from fastapi import APIRouter, UploadFile, File, Depends, Form
+from fastapi import APIRouter, UploadFile, File, Depends, Form, HTTPException
 from sqlalchemy.orm import Session
 
 import cv2
@@ -28,6 +29,11 @@ from ai_models.face_analysis.face_detection import detect_face_shape
 from ai_models.skin_tone_detection.skin_analysis import detect_skin_tone
 
 from ai_models.recommendation_model.recommendation import get_recommendation
+from typing import Optional
+
+from app.models.wardrobe import Wardrobe
+from app.services.weather_service import get_current_weather
+from app.services.todays_look import create_todays_look
 
 from ai_models.wardrobe_ai.wardrobe_checker import check_wardrobe
 from ai_models.recommendation_system.outfit_generator import generate_outfit
@@ -42,7 +48,7 @@ router = APIRouter(
 
 
 @router.post("/analyze")
-async def analyze(
+async def analyze_image(
     file: UploadFile = File(...),
     user_id: int = Form(...),
     db: Session = Depends(get_db)
@@ -182,6 +188,13 @@ async def analyze(
         Wardrobe.user_id == user_id
     ).all()
 
+    # =====================================================
+    # GET USER'S COMPLETE WARDROBE
+    # =====================================================
+
+    wardrobe = db.query(Wardrobe).filter(
+        Wardrobe.user_id == user_id
+    ).all()
 
     # =====================================================
     # 8. ORGANIZE WARDROBE
@@ -271,9 +284,25 @@ async def analyze(
         wardrobe_dict
     )
 
+    # =====================================================
+    # 10. GENERATE TODAY'S LOOK
+    # =====================================================
+
+    todays_look = create_todays_look(
+        body_shape=body_result,
+        skin_tone=skin_result,
+        gender=gender,
+        age=age,
+        favorite_color=favorite_color,
+        occasion=occasion,
+        weather=weather,
+        wardrobe=wardrobe_dict
+    )
+    
+
 
     # =====================================================
-    # 10. GET REAL PRODUCTS
+    # 11. GET REAL PRODUCTS
     # =====================================================
 
     products = get_products_by_category(
@@ -313,7 +342,7 @@ async def analyze(
 
 
     # =====================================================
-    # 11. SAVE ANALYSIS HISTORY
+    # 12. SAVE ANALYSIS HISTORY
     # =====================================================
 
     history = AnalysisHistory(
@@ -339,7 +368,7 @@ async def analyze(
 
 
     # =====================================================
-    # 12. RETURN EVERYTHING
+    # 13. RETURN EVERYTHING
     # =====================================================
 
     return {
@@ -372,7 +401,19 @@ async def analyze(
 
             "jackets": wardrobe_dict["jackets"],
 
-            "dresses": wardrobe_dict["dresses"]
+            "dresses": wardrobe_dict["dresses"],
+
+            "recommended_top_styles": todays_look["recommended_top_styles"],
+            
+            "recommended_bottom_styles": todays_look["recommended_bottom_styles"],
+            
+            "recommended_necklines": todays_look["recommended_necklines"],
+            
+            "preferred_colors": todays_look["preferred_colors"],
+            
+            "todays_look": todays_look["outfit"],
+            
+            "reasons": todays_look["reasons"]
 
         },
 
