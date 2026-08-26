@@ -4,6 +4,22 @@ import "./Home.css";
 function Home() {
     const navigate = useNavigate();
 
+    const savedUser = localStorage.getItem("user");
+
+    let user = null;
+
+    try {
+        user = savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+        user = null;
+    }
+
+    const userName =
+        user?.name ||
+        user?.username ||
+        user?.full_name ||
+        "Fashion Lover";
+
     const goToAnalysis = () => {
         navigate("/analysis");
     };
@@ -12,91 +28,94 @@ function Home() {
         navigate("/products");
     };
 
+    const goToWardrobe = () => {
+        navigate("/wardrobe");
+    };
+
+    const goToCart = () => {
+        navigate("/cart");
+    };
+
     return (
-        <div className="home">
+        <div className="home-page">
 
-            {/* ================= HERO ================= */}
-            <section className="hero">
+            {/* =====================================================
+                HERO
+            ===================================================== */}
 
-                <div className="hero-content">
-                    <p className="hero-small">
-                        AI POWERED FASHION
+            <section className="home-hero">
+
+                <div className="home-hero-content">
+
+                    <p className="home-ai-label">
+                        ✦ AI SMART FASHION
                     </p>
 
                     <h1>
-                        YOUR STYLE,
+                        Your style.
                         <br />
-                        <span>YOUR WAY.</span>
+                        <span>Intelligently styled.</span>
                     </h1>
 
-                    <p className="hero-description">
-                        Discover outfits that match your style,
-                        body shape and personality with AI.
+                    <p className="home-hero-description">
+                        Welcome back, {userName}. Discover personalized
+                        outfits created around your body shape, skin tone,
+                        face shape and wardrobe.
                     </p>
 
-                    <div className="hero-buttons">
+                    <div className="home-hero-actions">
+
                         <button
-                            className="primary-btn"
+                            className="home-primary-button"
                             onClick={goToAnalysis}
                         >
-                            ✨ GET AI RECOMMENDATION
+                            ✨ Analyze My Style
                         </button>
 
                         <button
-                            className="secondary-btn"
-                            onClick={goToProducts}
+                            className="home-secondary-button"
+                            onClick={goToWardrobe}
                         >
-                            SHOP PRODUCTS
+                            View My Wardrobe →
                         </button>
+
                     </div>
+
+                    <div className="home-trust-row">
+
+                        <span>✦ Personalized</span>
+                        <span>✦ AI Powered</span>
+                        <span>✦ Your Wardrobe</span>
+
+                    </div>
+
                 </div>
 
-                <div className="hero-image">
-    <img
-        src="https://images.unsplash.com/photo-1496747611176-843222e1e57c"
-        alt="AI Fashion Assistant"
-    />
-</div>
 
-            </section>
+                <div className="home-hero-visual">
 
+                    <div className="hero-image-card">
 
-            {/* ================= TODAY'S LOOK ================= */}
-            <section className="section today-section">
+                        <img
+                            src="https://images.unsplash.com/photo-1496747611176-843222e1e57c"
+                            alt="Fashion styling"
+                        />
 
-                <h2>
-                    TODAY'S LOOK ✨
-                </h2>
+                        <div className="hero-floating-card">
 
-                <div className="today-card">
+                            <div className="floating-icon">
+                                ✨
+                            </div>
 
-                    <div className="today-content">
+                            <div>
+                                <strong>
+                                    AI Style Match
+                                </strong>
 
-                        <h3>
-                            Sunny Day Style
-                        </h3>
-
-                        <p>
-                            ☀️ Weather: 23°C
-                        </p>
-
-                        <p>
-                            ⭐ Match Score: 95%
-                        </p>
-
-                        <div className="today-buttons">
-
-                            <button
-                                onClick={goToAnalysis}
-                            >
-                                TRY IT ON
-                            </button>
-
-                            <button
-                                onClick={goToAnalysis}
-                            >
-                                ADJUST OUTFIT
-                            </button>
+                                <p>
+                                    Personalized for you
+                                </p>
+                            </div>
 
                         </div>
 
@@ -107,133 +126,318 @@ function Home() {
             </section>
 
 
-            {/* ================= RECOMMENDED ================= */}
-            <section className="section">
+            {/* =====================================================
+                QUICK ACTIONS
+            ===================================================== */}
 
-                <h2>
-                    RECOMMENDED FOR YOU
-                </h2>
+            <section className="home-section">
 
-                <div className="recommendation-grid">
+                <div className="home-section-heading">
 
-                    <div
-                        className="recommendation-card"
-                        onClick={goToProducts}
-                    >
-                        <div className="recommendation-icon">
-                            👕
-                        </div>
-
-                        <h3>
-                            T-Shirt
-                        </h3>
-
-                        <p>
-                            92% Match
+                    <div>
+                        <p className="home-section-label">
+                            YOUR FASHION SPACE
                         </p>
+
+                        <h2>
+                            Everything you need,
+                            <br />
+                            in one place.
+                        </h2>
                     </div>
 
-
-                    <div
-                        className="recommendation-card"
-                        onClick={goToProducts}
-                    >
-                        <div className="recommendation-icon">
-                            👖
-                        </div>
-
-                        <h3>
-                            Jeans
-                        </h3>
-
-                        <p>
-                            89% Match
-                        </p>
-                    </div>
-
-
-                    <div
-                        className="recommendation-card"
-                        onClick={goToProducts}
-                    >
-                        <div className="recommendation-icon">
-                            🧥
-                        </div>
-
-                        <h3>
-                            Blazer
-                        </h3>
-
-                        <p>
-                            91% Match
-                        </p>
-                    </div>
+                    <p className="home-section-description">
+                        Manage your wardrobe, discover products and let
+                        AI create looks that fit your personal style.
+                    </p>
 
                 </div>
 
-            </section>
 
-
-            {/* ================= AI FEATURES ================= */}
-            <section className="section features-section">
-
-                <h2>
-                    AI FASHION FEATURES
-                </h2>
-
-                <div className="feature-grid">
+                <div className="home-action-grid">
 
                     <div
-                        className="feature-card"
+                        className="home-action-card action-ai"
                         onClick={goToAnalysis}
                     >
+
+                        <div className="action-card-top">
+                            <span className="action-icon">
+                                ✨
+                            </span>
+
+                            <span className="action-arrow">
+                                →
+                            </span>
+                        </div>
+
+                        <p className="action-label">
+                            AI ASSISTANT
+                        </p>
+
+                        <h3>
+                            Discover Your Style
+                        </h3>
+
+                        <p>
+                            Upload your photo and receive personalized
+                            fashion analysis and outfit recommendations.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        className="home-action-card action-wardrobe"
+                        onClick={goToWardrobe}
+                    >
+
+                        <div className="action-card-top">
+                            <span className="action-icon">
+                                👗
+                            </span>
+
+                            <span className="action-arrow">
+                                →
+                            </span>
+                        </div>
+
+                        <p className="action-label">
+                            MY COLLECTION
+                        </p>
+
+                        <h3>
+                            Digital Wardrobe
+                        </h3>
+
+                        <p>
+                            Explore your clothing collection and manage
+                            the pieces you already own.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        className="home-action-card action-shop"
+                        onClick={goToProducts}
+                    >
+
+                        <div className="action-card-top">
+                            <span className="action-icon">
+                                🛍️
+                            </span>
+
+                            <span className="action-arrow">
+                                →
+                            </span>
+                        </div>
+
+                        <p className="action-label">
+                            EXPLORE
+                        </p>
+
+                        <h3>
+                            Shop Your Style
+                        </h3>
+
+                        <p>
+                            Find fashion products that complement your
+                            personal style and AI recommendations.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            {/* =====================================================
+                TODAY'S LOOK
+            ===================================================== */}
+
+            <section className="home-section today-look-section">
+
+                <div className="today-look-card">
+
+                    <div className="today-look-content">
+
+                        <p className="home-section-label">
+                            ✦ AI STYLE INSPIRATION
+                        </p>
+
+                        <h2>
+                            Your next great
+                            <br />
+                            <span>look starts here.</span>
+                        </h2>
+
+                        <p>
+                            Let our AI analyze your personal features and
+                            wardrobe to create a look designed specifically
+                            for you.
+                        </p>
+
+                        <div className="today-look-points">
+
+                            <div>
+                                <span>01</span>
+                                <p>
+                                    Analyze your personal style
+                                </p>
+                            </div>
+
+                            <div>
+                                <span>02</span>
+                                <p>
+                                    Match with your wardrobe
+                                </p>
+                            </div>
+
+                            <div>
+                                <span>03</span>
+                                <p>
+                                    Discover your perfect outfit
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <button
+                            className="today-look-button"
+                            onClick={goToAnalysis}
+                        >
+                            Create My AI Look →
+                        </button>
+
+                    </div>
+
+
+                    <div className="today-look-visual">
+
+                        <div className="style-image-main">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1483985988355-763728e1935b"
+                                alt="Fashion inspiration"
+                            />
+
+                        </div>
+
+                        <div className="style-mini-card">
+
+                            <span>
+                                ✨
+                            </span>
+
+                            <div>
+                                <strong>
+                                    AI Styled
+                                </strong>
+
+                                <p>
+                                    Just for you
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            {/* =====================================================
+                WHY AI
+            ===================================================== */}
+
+            <section className="home-section">
+
+                <div className="home-section-heading centered">
+
+                    <div>
+
+                        <p className="home-section-label">
+                            WHY SMART FASHION?
+                        </p>
+
+                        <h2>
+                            Fashion that understands you.
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div className="home-feature-grid">
+
+                    <div className="home-feature-card">
+
+                        <div className="feature-number">
+                            01
+                        </div>
+
                         <div className="feature-icon">
-                            🤖
+                            🧍
                         </div>
 
                         <h3>
-                            Virtual Try-On
+                            Personal Analysis
                         </h3>
 
                         <p>
-                            Try outfits using AI
+                            AI considers your body shape, face shape and
+                            skin tone to create personalized suggestions.
                         </p>
+
                     </div>
 
 
-                    <div
-                        className="feature-card"
-                        onClick={goToAnalysis}
-                    >
-                        <div className="feature-icon">
-                            🎯
+                    <div className="home-feature-card">
+
+                        <div className="feature-number">
+                            02
                         </div>
 
-                        <h3>
-                            Style Quiz
-                        </h3>
-
-                        <p>
-                            Find your fashion personality
-                        </p>
-                    </div>
-
-
-                    <div
-                        className="feature-card"
-                        onClick={goToAnalysis}
-                    >
                         <div className="feature-icon">
                             👗
                         </div>
 
                         <h3>
-                            AI Outfit Recommendation
+                            Your Wardrobe
                         </h3>
 
                         <p>
-                            Get outfits selected specially for you
+                            Your own clothing collection becomes part of
+                            the AI styling experience.
                         </p>
+
+                    </div>
+
+
+                    <div className="home-feature-card">
+
+                        <div className="feature-number">
+                            03
+                        </div>
+
+                        <div className="feature-icon">
+                            ✨
+                        </div>
+
+                        <h3>
+                            Smarter Outfits
+                        </h3>
+
+                        <p>
+                            Get complete outfit combinations instead of
+                            random clothing recommendations.
+                        </p>
+
                     </div>
 
                 </div>
@@ -241,26 +445,47 @@ function Home() {
             </section>
 
 
-            {/* ================= SHOP CTA ================= */}
-            <section className="shop-section">
+            {/* =====================================================
+                SHOP CTA
+            ===================================================== */}
+
+            <section className="home-shop-section">
 
                 <div>
-                    <p className="shop-small">
-                        FIND YOUR PERFECT STYLE
+
+                    <p className="home-shop-label">
+                        ✦ COMPLETE YOUR STYLE
                     </p>
 
                     <h2>
-                        READY TO UPGRADE
+                        Find pieces that
                         <br />
-                        YOUR WARDROBE?
+                        feel like you.
                     </h2>
 
-                    <button
-                        onClick={goToProducts}
-                        className="shop-btn"
-                    >
-                        EXPLORE PRODUCTS →
-                    </button>
+                    <p>
+                        Explore fashion products and discover pieces
+                        that complement your personal style.
+                    </p>
+
+                    <div className="home-shop-actions">
+
+                        <button
+                            onClick={goToProducts}
+                            className="home-shop-button"
+                        >
+                            Explore Products →
+                        </button>
+
+                        <button
+                            onClick={goToCart}
+                            className="home-cart-link"
+                        >
+                            View Cart
+                        </button>
+
+                    </div>
+
                 </div>
 
             </section>

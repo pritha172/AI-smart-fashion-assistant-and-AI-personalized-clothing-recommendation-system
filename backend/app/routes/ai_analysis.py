@@ -1,7 +1,6 @@
 import sys
 import os
 
-
 sys.path.append(
     os.path.abspath(
         os.path.join(
@@ -11,7 +10,9 @@ sys.path.append(
     )
 )
 
-from fastapi import APIRouter, UploadFile, File, Depends, Form, HTTPException
+from typing import Optional
+
+from fastapi import APIRouter, UploadFile, File, Depends, Form
 from sqlalchemy.orm import Session
 
 import cv2
@@ -29,10 +30,7 @@ from ai_models.face_analysis.face_detection import detect_face_shape
 from ai_models.skin_tone_detection.skin_analysis import detect_skin_tone
 
 from ai_models.recommendation_model.recommendation import get_recommendation
-from typing import Optional
 
-from app.models.wardrobe import Wardrobe
-from app.services.weather_service import get_current_weather
 from app.services.todays_look import create_todays_look
 
 from ai_models.wardrobe_ai.wardrobe_checker import check_wardrobe
@@ -111,7 +109,7 @@ async def analyze_image(
 
 
     # =====================================================
-    # 5. GET OTHER USER PREFERENCES
+    # 5. GET USER PREFERENCES
     # =====================================================
 
     preference = db.query(
@@ -154,15 +152,23 @@ async def analyze_image(
     # 6. AI PRODUCT RECOMMENDATION
     # =====================================================
 
-    print("\n================ RECOMMENDATION DEBUG ================")
+    print(
+        "\n================ RECOMMENDATION DEBUG ================"
+    )
+
     print("Body Shape     :", body_result)
+    print("Face Shape     :", face_result)
     print("Skin Tone      :", skin_result)
     print("Gender         :", gender)
     print("Age            :", age)
     print("Favorite Color :", favorite_color)
     print("Occasion       :", occasion)
     print("Weather        :", weather)
-    print("=======================================================\n")
+
+    print(
+        "=======================================================\n"
+    )
+
 
     recommended_category = get_recommendation(
         body_result,
@@ -174,8 +180,15 @@ async def analyze_image(
         weather
     )
 
-    print(">>> RECOMMENDED CATEGORY:", recommended_category)
-    print("=======================================================\n")
+
+    print(
+        ">>> RECOMMENDED CATEGORY:",
+        recommended_category
+    )
+
+    print(
+        "=======================================================\n"
+    )
 
 
     # =====================================================
@@ -188,13 +201,12 @@ async def analyze_image(
         Wardrobe.user_id == user_id
     ).all()
 
-    # =====================================================
-    # GET USER'S COMPLETE WARDROBE
-    # =====================================================
 
-    wardrobe = db.query(Wardrobe).filter(
-        Wardrobe.user_id == user_id
-    ).all()
+    print(
+        ">>> WARDROBE ITEMS:",
+        len(wardrobe_items)
+    )
+
 
     # =====================================================
     # 8. ORGANIZE WARDROBE
@@ -207,7 +219,7 @@ async def analyze_image(
 
 
     # =====================================================
-    # 9. GENERATE OUTFIT
+    # 9. CONVERT WARDROBE TO DICTIONARY
     # =====================================================
 
     wardrobe_dict = {
@@ -222,7 +234,7 @@ async def analyze_image(
                 "season": item.season,
                 "occasion": item.occasion
             }
-            for item in wardrobe_groups["tops"]
+            for item in wardrobe_groups.get("tops", [])
         ],
 
         "bottoms": [
@@ -235,7 +247,7 @@ async def analyze_image(
                 "season": item.season,
                 "occasion": item.occasion
             }
-            for item in wardrobe_groups["bottoms"]
+            for item in wardrobe_groups.get("bottoms", [])
         ],
 
         "shoes": [
@@ -248,7 +260,7 @@ async def analyze_image(
                 "season": item.season,
                 "occasion": item.occasion
             }
-            for item in wardrobe_groups["shoes"]
+            for item in wardrobe_groups.get("shoes", [])
         ],
 
         "jackets": [
@@ -261,7 +273,7 @@ async def analyze_image(
                 "season": item.season,
                 "occasion": item.occasion
             }
-            for item in wardrobe_groups["jackets"]
+            for item in wardrobe_groups.get("jackets", [])
         ],
 
         "dresses": [
@@ -274,35 +286,40 @@ async def analyze_image(
                 "season": item.season,
                 "occasion": item.occasion
             }
-            for item in wardrobe_groups["dresses"]
+            for item in wardrobe_groups.get("dresses", [])
         ]
 
     }
 
 
+    # =====================================================
+    # 10. GENERATE OUTFIT
+    # =====================================================
+
     outfit = generate_outfit(
         wardrobe_dict
     )
 
+
     # =====================================================
-    # 10. GENERATE TODAY'S LOOK
+    # 11. GENERATE TODAY'S LOOK
     # =====================================================
 
     todays_look = create_todays_look(
         body_shape=body_result,
         skin_tone=skin_result,
+        face_shape=face_result,
         gender=gender,
         age=age,
         favorite_color=favorite_color,
         occasion=occasion,
         weather=weather,
-        wardrobe=wardrobe_dict
+        wardrobe_items=wardrobe_items
     )
-    
 
 
     # =====================================================
-    # 11. GET REAL PRODUCTS
+    # 12. GET REAL PRODUCTS
     # =====================================================
 
     products = get_products_by_category(
@@ -326,7 +343,9 @@ async def analyze_image(
 
             "color": product.color,
 
-            "price": float(product.price or 0),
+            "price": float(
+                product.price or 0
+            ),
 
             "image_url": product.image_url,
 
@@ -342,7 +361,7 @@ async def analyze_image(
 
 
     # =====================================================
-    # 12. SAVE ANALYSIS HISTORY
+    # 13. SAVE ANALYSIS HISTORY
     # =====================================================
 
     history = AnalysisHistory(
@@ -368,7 +387,7 @@ async def analyze_image(
 
 
     # =====================================================
-    # 13. RETURN EVERYTHING
+    # 14. RETURN EVERYTHING
     # =====================================================
 
     return {
@@ -379,7 +398,24 @@ async def analyze_image(
 
         "user_id": user_id,
 
+        # ================================================
+        # USER INFORMATION
+        # ================================================
+
         "gender": gender,
+
+        "age": age,
+
+        "favorite_color": favorite_color,
+
+        "occasion": occasion,
+
+        "weather": weather,
+
+
+        # ================================================
+        # AI ANALYSIS
+        # ================================================
 
         "body_shape": body_result,
 
@@ -387,7 +423,72 @@ async def analyze_image(
 
         "skin_tone": skin_result,
 
+
+        # ================================================
+        # OLD RECOMMENDATION
+        # ================================================
+
         "recommended_category": recommended_category,
+
+
+        # ================================================
+        # PERSONALIZED STYLE
+        # ================================================
+
+        "preferred_colors": todays_look.get(
+            "preferred_colors",
+            []
+        ),
+
+        "recommended_top_styles": todays_look.get(
+            "recommended_top_styles",
+            []
+        ),
+
+        "recommended_bottom_styles": todays_look.get(
+            "recommended_bottom_styles",
+            []
+        ),
+
+        "recommended_necklines": todays_look.get(
+            "recommended_necklines",
+            []
+        ),
+
+
+        # ================================================
+        # TODAY'S LOOK
+        # ================================================
+
+        "todays_look": todays_look.get(
+            "outfit",
+            {}
+        ),
+
+
+        # ================================================
+        # REASONS
+        # ================================================
+
+        "reasons": todays_look.get(
+            "reasons",
+            []
+        ),
+
+
+        # ================================================
+        # WEATHER ADVICE
+        # ================================================
+
+        "weather_advice": todays_look.get(
+            "weather_advice",
+            {}
+        ),
+
+
+        # ================================================
+        # WARDROBE
+        # ================================================
 
         "wardrobe": {
 
@@ -401,23 +502,21 @@ async def analyze_image(
 
             "jackets": wardrobe_dict["jackets"],
 
-            "dresses": wardrobe_dict["dresses"],
-
-            "recommended_top_styles": todays_look["recommended_top_styles"],
-            
-            "recommended_bottom_styles": todays_look["recommended_bottom_styles"],
-            
-            "recommended_necklines": todays_look["recommended_necklines"],
-            
-            "preferred_colors": todays_look["preferred_colors"],
-            
-            "todays_look": todays_look["outfit"],
-            
-            "reasons": todays_look["reasons"]
+            "dresses": wardrobe_dict["dresses"]
 
         },
 
+
+        # ================================================
+        # GENERATED OUTFIT
+        # ================================================
+
         "outfit": outfit,
+
+
+        # ================================================
+        # REAL PRODUCTS
+        # ================================================
 
         "products": product_list
 

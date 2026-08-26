@@ -3,10 +3,6 @@
 # ============================================================
 
 
-# ------------------------------------------------------------
-# BODY SHAPE → SUITABLE CLOTHING STYLES
-# ------------------------------------------------------------
-
 BODY_SHAPE_STYLES = {
 
     "hourglass": {
@@ -88,10 +84,6 @@ BODY_SHAPE_STYLES = {
 }
 
 
-# ------------------------------------------------------------
-# FACE SHAPE → NECKLINE / TOP STYLE
-# ------------------------------------------------------------
-
 FACE_SHAPE_STYLES = {
 
     "oval": [
@@ -136,10 +128,6 @@ FACE_SHAPE_STYLES = {
     ]
 }
 
-
-# ------------------------------------------------------------
-# SKIN TONE → SUITABLE COLORS
-# ------------------------------------------------------------
 
 SKIN_TONE_COLORS = {
 
@@ -214,18 +202,17 @@ SKIN_TONE_COLORS = {
 }
 
 
-# ------------------------------------------------------------
+# ============================================================
 # NORMALIZATION
-# ------------------------------------------------------------
+# ============================================================
 
 def normalize(value):
-
     return str(value or "").strip().lower()
 
 
-# ------------------------------------------------------------
-# BODY SHAPE STYLE
-# ------------------------------------------------------------
+# ============================================================
+# STYLE FUNCTIONS
+# ============================================================
 
 def get_body_styles(body_shape):
 
@@ -234,15 +221,10 @@ def get_body_styles(body_shape):
     for key in BODY_SHAPE_STYLES:
 
         if key in body_shape:
-
             return BODY_SHAPE_STYLES[key]
 
     return BODY_SHAPE_STYLES["default"]
 
-
-# ------------------------------------------------------------
-# FACE SHAPE STYLE
-# ------------------------------------------------------------
 
 def get_face_styles(face_shape):
 
@@ -251,15 +233,10 @@ def get_face_styles(face_shape):
     for key in FACE_SHAPE_STYLES:
 
         if key in face_shape:
-
             return FACE_SHAPE_STYLES[key]
 
     return FACE_SHAPE_STYLES["default"]
 
-
-# ------------------------------------------------------------
-# SKIN TONE COLORS
-# ------------------------------------------------------------
 
 def get_skin_colors(skin_tone):
 
@@ -268,15 +245,14 @@ def get_skin_colors(skin_tone):
     for key in SKIN_TONE_COLORS:
 
         if key in skin_tone:
-
             return SKIN_TONE_COLORS[key]
 
     return SKIN_TONE_COLORS["default"]
 
 
-# ------------------------------------------------------------
+# ============================================================
 # COLOR MATCH
-# ------------------------------------------------------------
+# ============================================================
 
 def color_matches(item_color, preferred_colors):
 
@@ -293,9 +269,9 @@ def color_matches(item_color, preferred_colors):
     return False
 
 
-# ------------------------------------------------------------
+# ============================================================
 # CATEGORY MATCH
-# ------------------------------------------------------------
+# ============================================================
 
 def category_is(item, category):
 
@@ -304,15 +280,54 @@ def category_is(item, category):
     return category in item_category
 
 
-# ------------------------------------------------------------
-# WEATHER ANALYSIS
-# ------------------------------------------------------------
+# ============================================================
+# WEATHER
+# ============================================================
 
 def get_weather_advice(weather):
 
+    # Handle missing weather
+    if not weather:
+        return {
+            "type": "unknown",
+            "advice": "Weather information is unavailable."
+        }
+
+    # If weather is accidentally a string such as "Summer"
+    if isinstance(weather, str):
+
+        condition = normalize(weather)
+
+        if "summer" in condition or "hot" in condition:
+            return {
+                "type": "hot",
+                "advice": "The weather is warm, so lightweight and breathable clothing is recommended."
+            }
+
+        if "winter" in condition or "cold" in condition:
+            return {
+                "type": "cold",
+                "advice": "The weather is cool, so warmer clothing or an additional layer is recommended."
+            }
+
+        if "rain" in condition:
+            return {
+                "type": "rain",
+                "advice": "Rain is expected, so practical clothing and suitable footwear are recommended."
+            }
+
+        return {
+            "type": "unknown",
+            "advice": f"The current weather is {weather}, so a comfortable everyday outfit is recommended."
+        }
+
     temperature = weather.get("temperature")
+
     precipitation = weather.get("precipitation") or 0
-    condition = normalize(weather.get("condition"))
+
+    condition = normalize(
+        weather.get("condition")
+    )
 
     if temperature is None:
 
@@ -321,18 +336,22 @@ def get_weather_advice(weather):
             "advice": "Weather information is unavailable."
         }
 
-    if precipitation > 0 or "rain" in condition or "thunder" in condition:
+    if (
+        precipitation > 0
+        or "rain" in condition
+        or "thunder" in condition
+    ):
 
         return {
             "type": "rain",
-            "advice": "Rain is expected, so a practical outfit with suitable footwear and optional outerwear is recommended."
+            "advice": "Rain is expected, so practical clothing with suitable footwear and optional outerwear is recommended."
         }
 
     if temperature >= 30:
 
         return {
             "type": "hot",
-            "advice": "The weather is warm, so lightweight and breathable clothing is recommended."
+            "advice": "The weather is hot, so lightweight and breathable clothing is recommended."
         }
 
     if temperature >= 24:
@@ -355,9 +374,9 @@ def get_weather_advice(weather):
     }
 
 
-# ------------------------------------------------------------
-# FIND WARDROBE ITEMS
-# ------------------------------------------------------------
+# ============================================================
+# FIND ITEMS
+# ============================================================
 
 def find_items(wardrobe, category):
 
@@ -368,15 +387,16 @@ def find_items(wardrobe, category):
     ]
 
 
-# ------------------------------------------------------------
+# ============================================================
 # SELECT BEST ITEM
-# ------------------------------------------------------------
+# ============================================================
 
 def choose_best_item(items, preferred_colors):
 
     if not items:
         return None
 
+    # First preference: suitable color
     for item in items:
 
         if color_matches(
@@ -385,31 +405,70 @@ def choose_best_item(items, preferred_colors):
         ):
             return item
 
+    # Otherwise use first available item
     return items[0]
 
 
-# ------------------------------------------------------------
-# CREATE TODAY'S LOOK
-# ------------------------------------------------------------
+# ============================================================
+# TODAY'S LOOK
+# ============================================================
 
 def create_todays_look(
-    wardrobe,
     body_shape,
-    face_shape,
     skin_tone,
-    weather
+    gender=None,
+    age=None,
+    favorite_color=None,
+    occasion=None,
+    weather=None,
+    wardrobe_items=None,
+    face_shape=None
 ):
 
-    body_styles = get_body_styles(body_shape)
+    # --------------------------------------------------------
+    # SAFETY
+    # --------------------------------------------------------
 
-    face_styles = get_face_styles(face_shape)
-
-    preferred_colors = get_skin_colors(skin_tone)
-
-    weather_advice = get_weather_advice(weather)
+    wardrobe = wardrobe_items or []
 
     # --------------------------------------------------------
-    # FIND CLOTHING
+    # PERSONALIZED STYLE
+    # --------------------------------------------------------
+
+    body_styles = get_body_styles(
+        body_shape
+    )
+
+    face_styles = get_face_styles(
+        face_shape
+    )
+
+    preferred_colors = get_skin_colors(
+        skin_tone
+    )
+
+    # Add user's favorite color
+    if favorite_color:
+
+        fav = normalize(favorite_color)
+
+        if fav and fav not in preferred_colors:
+
+            preferred_colors.insert(
+                0,
+                fav
+            )
+
+    # --------------------------------------------------------
+    # WEATHER
+    # --------------------------------------------------------
+
+    weather_advice = get_weather_advice(
+        weather
+    )
+
+    # --------------------------------------------------------
+    # FIND WHOLE WARDROBE
     # --------------------------------------------------------
 
     tops = find_items(
@@ -438,22 +497,13 @@ def create_todays_look(
     )
 
     # --------------------------------------------------------
-    # DRESS OPTION
+    # SELECT ITEMS
     # --------------------------------------------------------
 
     dress = choose_best_item(
         dresses,
         preferred_colors
     )
-
-    shoe = choose_best_item(
-        shoes,
-        preferred_colors
-    )
-
-    # --------------------------------------------------------
-    # TOP + BOTTOM OPTION
-    # --------------------------------------------------------
 
     top = choose_best_item(
         tops,
@@ -465,17 +515,27 @@ def create_todays_look(
         preferred_colors
     )
 
+    shoe = choose_best_item(
+        shoes,
+        preferred_colors
+    )
+
     # --------------------------------------------------------
-    # BUILD RECOMMENDATION
+    # RESULT
     # --------------------------------------------------------
 
     outfit = {}
 
     reasons = []
 
+    # --------------------------------------------------------
+    # DRESS
+    # --------------------------------------------------------
+
     if dress:
 
         outfit["type"] = "dress"
+
         outfit["dress"] = {
             "id": dress.id,
             "category": dress.category,
@@ -493,9 +553,13 @@ def create_todays_look(
             }
 
         reasons.append(
-            f"The {dress.color or 'selected'} dress matches the colors "
-            f"recommended for your {skin_tone or 'detected'} skin tone."
+            f"The {dress.color or 'selected'} dress matches "
+            f"colors recommended for your {skin_tone or 'detected'} skin tone."
         )
+
+    # --------------------------------------------------------
+    # TOP + BOTTOM
+    # --------------------------------------------------------
 
     elif top and bottom:
 
@@ -525,25 +589,37 @@ def create_todays_look(
             }
 
         reasons.append(
-            f"The {top.category} is selected because your "
-            f"{body_shape or 'detected'} body shape can benefit from "
-            f"{body_styles['tops'][0]} styling."
+            f"The {top.category} suits your "
+            f"{body_shape or 'detected'} body shape."
         )
 
         reasons.append(
-            f"The neckline/style can complement your "
-            f"{face_shape or 'detected'} face shape, especially "
-            f"{face_styles[0]} styles."
+            f"Recommended top styling includes "
+            f"{body_styles['tops'][0]}."
         )
 
         reasons.append(
-            f"The {top.color or 'selected'} color is selected from "
+            f"For your {face_shape or 'detected'} face shape, "
+            f"{face_styles[0]} styles are recommended."
+        )
+
+        reasons.append(
+            f"The {top.color or 'selected'} color works with "
             f"colors recommended for your {skin_tone or 'detected'} skin tone."
+        )
+
+        reasons.append(
+            f"The {bottom.color or 'selected'} bottom creates a "
+            f"balanced combination with the selected top."
         )
 
     else:
 
         outfit["type"] = "category_only"
+
+        reasons.append(
+            "There are not enough suitable wardrobe items to create a complete outfit."
+        )
 
     # --------------------------------------------------------
     # WEATHER REASON
@@ -554,10 +630,13 @@ def create_todays_look(
     )
 
     # --------------------------------------------------------
-    # OUTERWEAR
+    # JACKET FOR COLD WEATHER
     # --------------------------------------------------------
 
-    if weather_advice["type"] == "cold" and jackets:
+    if (
+        weather_advice["type"] == "cold"
+        and jackets
+    ):
 
         jacket = choose_best_item(
             jackets,
@@ -572,15 +651,31 @@ def create_todays_look(
         }
 
         reasons.append(
-            "An outer layer is included because the current temperature is cool."
+            "A jacket is included because the weather is cool."
         )
 
+    # --------------------------------------------------------
+    # FINAL RESPONSE
+    # --------------------------------------------------------
+
     return {
+
         "outfit": outfit,
+
         "preferred_colors": preferred_colors,
-        "recommended_top_styles": body_styles["tops"],
-        "recommended_bottom_styles": body_styles["bottoms"],
-        "recommended_necklines": face_styles,
-        "reasons": reasons,
-        "weather_advice": weather_advice
+
+        "recommended_top_styles":
+            body_styles["tops"],
+
+        "recommended_bottom_styles":
+            body_styles["bottoms"],
+
+        "recommended_necklines":
+            face_styles,
+
+        "reasons":
+            reasons,
+
+        "weather_advice":
+            weather_advice
     }

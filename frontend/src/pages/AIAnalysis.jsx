@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import API from "../api";
 import "./AIAnalysis.css";
@@ -14,7 +13,7 @@ function AIAnalysis() {
 
 
     // =====================================================
-    // GET IMAGE URL
+    // IMAGE URL
     // =====================================================
 
     const getImageUrl = (imageUrl) => {
@@ -32,17 +31,13 @@ function AIAnalysis() {
 
 
     // =====================================================
-    // OPEN REAL PRODUCT WEBSITE
+    // OPEN REAL PRODUCT
     // =====================================================
 
     const openProduct = (productUrl) => {
 
         if (!productUrl) {
-
-            alert(
-                "Product website link is not available."
-            );
-
+            alert("Product website link is not available.");
             return;
         }
 
@@ -55,46 +50,87 @@ function AIAnalysis() {
 
 
     // =====================================================
+    // GET USER LOCATION
+    // =====================================================
+
+    const getUserLocation = () => {
+
+        return new Promise((resolve) => {
+
+            if (!navigator.geolocation) {
+
+                resolve({
+                    latitude: null,
+                    longitude: null
+                });
+
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+
+                (position) => {
+
+                    resolve({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    });
+
+                },
+
+                () => {
+
+                    resolve({
+                        latitude: null,
+                        longitude: null
+                    });
+
+                },
+
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 300000
+                }
+
+            );
+
+        });
+
+    };
+
+
+    // =====================================================
     // ANALYZE IMAGE
     // =====================================================
 
     const analyze = async () => {
 
         if (!image) {
-
-            alert(
-                "Please select an image first."
-            );
-
+            alert("Please select an image first.");
             return;
         }
 
 
-        // Get logged-in user
+        // -------------------------------------------------
+        // GET LOGGED-IN USER
+        // -------------------------------------------------
 
-        const savedUser =
-            localStorage.getItem("user");
-
+        const savedUser = localStorage.getItem("user");
 
         if (!savedUser) {
-
-            alert(
-                "Please login first."
-            );
-
+            alert("Please login first.");
             return;
         }
 
 
         let user;
 
-
         try {
 
             user = JSON.parse(savedUser);
 
-        }
-        catch {
+        } catch (error) {
 
             alert(
                 "Invalid login information. Please login again."
@@ -120,86 +156,60 @@ function AIAnalysis() {
 
         try {
 
+            // -------------------------------------------------
+            // GET LOCATION
+            // -------------------------------------------------
+
             const location = await getUserLocation();
 
-const savedUser =
-    localStorage.getItem("user");
 
-let userId = null;
+            // -------------------------------------------------
+            // CREATE FORM DATA
+            // -------------------------------------------------
 
-if (savedUser) {
+            const formData = new FormData();
 
-    try {
+            formData.append(
+                "file",
+                image
+            );
 
-        const user = JSON.parse(savedUser);
-
-        userId = user.id;
-
-    } catch (error) {
-
-        console.log(
-            "Unable to read user information"
-        );
-
-    }
-}
+            formData.append(
+                "user_id",
+                String(user.id)
+            );
 
 
-const formData = new FormData();
+            if (
+                location.latitude !== null &&
+                location.longitude !== null
+            ) {
 
-formData.append(
-    "file",
-    file
-);
+                formData.append(
+                    "latitude",
+                    String(location.latitude)
+                );
 
-if (userId) {
+                formData.append(
+                    "longitude",
+                    String(location.longitude)
+                );
 
-    formData.append(
-        "user_id",
-        userId
-    );
-}
-
-// Get logged-in user
-
-if (savedUser) {
-    const user = JSON.parse(savedUser);
-
-    if (user.id) {
-        // your existing code
-    }
-}
-
-if (location.latitude !== null) {
-
-    formData.append(
-        "latitude",
-        location.latitude
-    );
-
-}
-
-if (location.longitude !== null) {
-
-    formData.append(
-        "longitude",
-        location.longitude
-    );
-}
+            }
 
 
-const response = await API.post(
-    "/ai/analyze",
-    formData
-);
+            // -------------------------------------------------
+            // CALL BACKEND
+            // -------------------------------------------------
 
-setResult(
-    response.data
-);
+            const response = await API.post(
+                "/ai/analyze",
+                formData
+            );
 
 
             console.log(
-                "AI Response:",
+                "AI RESPONSE:",
                 response.data
             );
 
@@ -208,11 +218,11 @@ setResult(
                 response.data
             );
 
-        }
-        catch (error) {
+
+        } catch (error) {
 
             console.error(
-                "AI Analysis Error:",
+                "AI ANALYSIS ERROR:",
                 error
             );
 
@@ -220,14 +230,13 @@ setResult(
             if (error.response) {
 
                 alert(
-                    "Analysis Failed: " +
+                    "Analysis Failed:\n\n" +
                     JSON.stringify(
                         error.response.data
                     )
                 );
 
-            }
-            else {
+            } else {
 
                 alert(
                     "Analysis failed. Please check the backend."
@@ -235,17 +244,17 @@ setResult(
 
             }
 
-        }
-        finally {
+        } finally {
 
             setLoading(false);
 
         }
+
     };
 
 
     // =====================================================
-    // IMAGE SELECTION
+    // IMAGE CHANGE
     // =====================================================
 
     const handleImageChange = (event) => {
@@ -259,7 +268,9 @@ setResult(
         }
 
 
-        setImage(selectedFile);
+        setImage(
+            selectedFile
+        );
 
 
         setPreview(
@@ -270,20 +281,71 @@ setResult(
 
 
         setResult(null);
+
     };
 
 
     // =====================================================
-    // PAGE
+    // TAG COMPONENT
+    // =====================================================
+
+    const Tags = ({
+        items,
+        className = ""
+    }) => {
+
+        if (
+            !items ||
+            items.length === 0
+        ) {
+
+            return (
+                <span className="no-data">
+                    Not available
+                </span>
+            );
+
+        }
+
+
+        return (
+
+            <div
+                className={`style-tags ${className}`}
+            >
+
+                {items.map(
+                    (item, index) => (
+
+                        <span
+                            className="style-tag"
+                            key={`${item}-${index}`}
+                        >
+                            {item}
+                        </span>
+
+                    )
+                )}
+
+            </div>
+
+        );
+
+    };
+
+
+    // =====================================================
+    // RENDER
     // =====================================================
 
     return (
 
         <div className="ai-page">
 
-            {/* =========================================
+
+            {/* =================================================
                 HEADER
-            ========================================= */}
+            ================================================= */}
 
             <section className="ai-header">
 
@@ -306,16 +368,22 @@ setResult(
             </section>
 
 
-            {/* =========================================
-                UPLOAD SECTION
-            ========================================= */}
+
+            {/* =================================================
+                UPLOAD
+            ================================================= */}
 
             <section className="ai-upload-card">
 
                 <div className="upload-content">
 
+                    <div className="upload-icon">
+                        ✨
+                    </div>
+
+
                     <h2>
-                        ✨ Analyze My Style
+                        Analyze My Style
                     </h2>
 
 
@@ -327,7 +395,7 @@ setResult(
 
                     <label className="upload-button">
 
-                        Choose Photo
+                        📷 Choose Photo
 
 
                         <input
@@ -340,23 +408,29 @@ setResult(
                     </label>
 
 
+
                     {preview && (
 
                         <div className="image-preview">
 
-                            <img
-                                src={preview}
-                                alt="Selected"
-                            />
+                            <div className="preview-frame">
+
+                                <img
+                                    src={preview}
+                                    alt="Selected"
+                                />
+
+                            </div>
 
 
-                            <p>
+                            <p className="image-name">
                                 {image?.name}
                             </p>
 
                         </div>
 
                     )}
+
 
 
                     <button
@@ -368,10 +442,20 @@ setResult(
                         }
                     >
 
-                        {loading
-                            ? "Analyzing Your Style..."
-                            : "Analyze My Style"
-                        }
+                        {loading ? (
+
+                            <>
+                                <span className="loading-spinner"></span>
+                                Analyzing Your Style...
+                            </>
+
+                        ) : (
+
+                            <>
+                                ✨ Analyze My Style
+                            </>
+
+                        )}
 
                     </button>
 
@@ -380,13 +464,19 @@ setResult(
             </section>
 
 
-            {/* =========================================
-                AI RESULT
-            ========================================= */}
+
+            {/* =================================================
+                RESULTS
+            ================================================= */}
 
             {result && (
 
                 <section className="ai-results">
+
+
+                    {/* =================================================
+                        RESULT HEADER
+                    ================================================= */}
 
                     <div className="result-heading">
 
@@ -399,348 +489,222 @@ setResult(
                             Your Style Result ✨
                         </h2>
 
+
+                        <p>
+                            Your personalized fashion recommendations
+                            based on your unique features.
+                        </p>
+
                     </div>
 
-                    {result && result.todays_look && (
 
-    <div
-        style={{
-            marginTop: "30px",
-            padding: "25px",
-            border: "1px solid #ddd",
-            borderRadius: "15px",
-            background: "#fff"
-        }}
-    >
 
-        <h2>
-            👗 Today's Look
-        </h2>
+                    {/* =================================================
+                        PERSONALIZED AI HERO
+                    ================================================= */}
 
+                    <div className="ai-personalized-hero">
 
-        {/* WEATHER */}
+                        <div className="hero-sparkle sparkle-one">
+                            ✦
+                        </div>
 
-        {result.weather && (
+                        <div className="hero-sparkle sparkle-two">
+                            ✦
+                        </div>
 
-            <div
-                style={{
-                    marginBottom: "20px"
-                }}
-            >
+                        <div className="hero-sparkle sparkle-three">
+                            ✦
+                        </div>
 
-                <h3>
-                    🌤️ Today's Weather
-                </h3>
 
-                <p>
-                    <strong>
-                        Condition:
-                    </strong>{" "}
 
-                    {result.weather.condition}
-                </p>
+                        {/* USER PHOTO */}
 
-                {result.weather.temperature !== null && (
+                        <div className="hero-photo-wrapper">
 
-                    <p>
+                            <div className="hero-photo-ring">
 
-                        <strong>
-                            Temperature:
-                        </strong>{" "}
+                                {preview ? (
 
-                        {result.weather.temperature}
-                        °C
+                                    <img
+                                        src={preview}
+                                        alt="Your style"
+                                        className="hero-photo"
+                                    />
 
-                    </p>
+                                ) : (
 
-                )}
+                                    <div className="hero-photo-placeholder">
+                                        👗
+                                    </div>
 
-            </div>
+                                )}
 
-        )}
+                            </div>
 
 
-        {/* PERSONALIZED STYLE */}
+                            <div className="hero-arrow">
+                                ↗
+                            </div>
 
-        <h3>
-            ✨ Recommended For You
-        </h3>
+                        </div>
 
-        <p>
 
-            <strong>
-                Body Shape:
-            </strong>{" "}
 
-            {result.body_shape}
+                        {/* HERO CONTENT */}
 
-        </p>
+                        <div className="hero-content">
 
-        <p>
+                            <p className="hero-greeting">
+                                Hey there, fashionista! 👋
+                            </p>
 
-            <strong>
-                Face Shape:
-            </strong>{" "}
 
-            {result.face_shape}
+                            <h2>
+                                Your personal style profile is ready ✨
+                            </h2>
 
-        </p>
 
-        <p>
+                            <p className="hero-description">
+                                Our AI has analyzed your unique features
+                                and created personalized fashion recommendations
+                                just for you.
+                            </p>
 
-            <strong>
-                Skin Tone:
-            </strong>{" "}
 
-            {result.skin_tone}
 
-        </p>
+                            {/* BADGES */}
 
+                            <div className="hero-badges">
 
-        {/* COLORS */}
+                                <span className="hero-badge">
+                                    ✨ Personalized
+                                </span>
 
-        <p>
+                                <span className="hero-badge">
+                                    💗 AI-Powered
+                                </span>
 
-            <strong>
-                Colors that suit you:
-            </strong>{" "}
+                                <span className="hero-badge">
+                                    🛡️ Private
+                                </span>
 
-            {result.preferred_colors?.join(", ")}
+                            </div>
 
-        </p>
+                        </div>
 
 
-        {/* TOP STYLES */}
 
-        <p>
+                        {/* FASHION DECORATION */}
 
-            <strong>
-                Suitable Top Styles:
-            </strong>{" "}
+                        <div className="fashion-decoration">
 
-            {result.recommended_top_styles?.join(", ")}
+                            <div className="clothing-rack">
 
-        </p>
+                                <div className="rack-top"></div>
 
+                                <div className="hanger hanger-one">
+                                    👚
+                                </div>
 
-        {/* NECKLINES */}
+                                <div className="hanger hanger-two">
+                                    👗
+                                </div>
 
-        <p>
+                                <div className="hanger hanger-three">
+                                    🧥
+                                </div>
 
-            <strong>
-                Suitable Necklines:
-            </strong>{" "}
+                            </div>
 
-            {result.recommended_necklines?.join(", ")}
 
-        </p>
+                            <div className="fashion-plant">
+                                🌿
+                            </div>
 
 
-        {/* OUTFIT */}
+                            <div className="fashion-platform"></div>
 
-        <h3>
-            👕 Your Wardrobe Outfit
-        </h3>
+                        </div>
 
+                    </div>
 
-        {result.todays_look.type === "top_bottom" && (
 
-            <div>
 
-                <p>
-                    <strong>
-                        Top:
-                    </strong>{" "}
-
-                    {result.todays_look.top?.category}
-
-                    {" - "}
-
-                    {result.todays_look.top?.color}
-
-                </p>
-
-
-                <p>
-                    <strong>
-                        Bottom:
-                    </strong>{" "}
-
-                    {result.todays_look.bottom?.category}
-
-                    {" - "}
-
-                    {result.todays_look.bottom?.color}
-
-                </p>
-
-
-                {result.todays_look.shoes && (
-
-                    <p>
-
-                        <strong>
-                            Shoes:
-                        </strong>{" "}
-
-                        {result.todays_look.shoes.category}
-
-                        {" - "}
-
-                        {result.todays_look.shoes.color}
-
-                    </p>
-
-                )}
-
-            </div>
-
-        )}
-
-
-        {result.todays_look.type === "dress" && (
-
-            <div>
-
-                <p>
-
-                    <strong>
-                        Dress:
-                    </strong>{" "}
-
-                    {result.todays_look.dress.category}
-
-                    {" - "}
-
-                    {result.todays_look.dress.color}
-
-                </p>
-
-
-                {result.todays_look.shoes && (
-
-                    <p>
-
-                        <strong>
-                            Shoes:
-                        </strong>{" "}
-
-                        {result.todays_look.shoes.category}
-
-                        {" - "}
-
-                        {result.todays_look.shoes.color}
-
-                    </p>
-
-                )}
-
-            </div>
-
-        )}
-
-
-        {/* REASONS */}
-
-        <h3>
-            💡 Why this look is recommended
-        </h3>
-
-        <ul>
-
-            {result.reasons?.map(
-                (reason, index) => (
-
-                    <li key={index}>
-                        {reason}
-                    </li>
-
-                )
-            )}
-
-        </ul>
-
-    </div>
-
-)}
-
-                    {/* =================================
-                        ANALYSIS CARDS
-                    ================================= */}
+                    {/* =================================================
+                        QUICK ANALYSIS CARDS
+                    ================================================= */}
 
                     <div className="analysis-cards">
 
+
                         <div className="analysis-card">
 
-                            <span>
+                            <div className="analysis-icon">
                                 🧍
-                            </span>
-
+                            </div>
 
                             <p>
                                 Body Shape
                             </p>
 
-
                             <h3>
-                                {result.body_shape}
+                                {result.body_shape || "—"}
                             </h3>
 
                         </div>
 
 
+
                         <div className="analysis-card">
 
-                            <span>
+                            <div className="analysis-icon">
                                 🙂
-                            </span>
-
+                            </div>
 
                             <p>
                                 Face Shape
                             </p>
 
-
                             <h3>
-                                {result.face_shape}
+                                {result.face_shape || "—"}
                             </h3>
 
                         </div>
 
 
+
                         <div className="analysis-card">
 
-                            <span>
+                            <div className="analysis-icon">
                                 🎨
-                            </span>
-
+                            </div>
 
                             <p>
                                 Skin Tone
                             </p>
 
-
                             <h3>
-                                {result.skin_tone}
+                                {result.skin_tone || "—"}
                             </h3>
 
                         </div>
 
 
-                        <div className="analysis-card">
 
-                            <span>
+                        <div className="analysis-card highlight-card">
+
+                            <div className="analysis-icon">
                                 👗
-                            </span>
-
+                            </div>
 
                             <p>
                                 Recommended Category
                             </p>
 
-
                             <h3>
-                                {result.recommended_category}
+                                {result.recommended_category || "—"}
                             </h3>
 
                         </div>
@@ -748,13 +712,542 @@ setResult(
                     </div>
 
 
-                    {/* =================================
-                        WARDROBE RECOMMENDATIONS
-                    ================================= */}
+
+                    {/* =================================================
+                        TODAY'S LOOK
+                    ================================================= */}
+
+                    {result.todays_look && (
+
+                        <section className="todays-look-section">
+
+
+                            {/* SECTION HEADER */}
+
+                            <div className="section-top">
+
+                                <div>
+
+                                    <p className="ai-label">
+                                        PERSONALIZED FOR YOU
+                                    </p>
+
+                                    <h2>
+                                        👗 Today's Look
+                                    </h2>
+
+                                </div>
+
+
+                                <div className="look-badge">
+                                    ✨ AI Styled
+                                </div>
+
+                            </div>
+
+
+
+                            {/* WEATHER */}
+
+                            {result.weather && (
+
+                                <div className="weather-card">
+
+                                    <div className="weather-icon">
+                                        🌤️
+                                    </div>
+
+
+                                    <div className="weather-info">
+
+                                        <span>
+                                            TODAY'S WEATHER
+                                        </span>
+
+                                        <strong>
+                                            {result.weather.condition ||
+                                                "Current Weather"}
+                                        </strong>
+
+
+                                        {result.weather.temperature !== null &&
+                                            result.weather.temperature !== undefined && (
+
+                                                <p>
+                                                    {result.weather.temperature}°C
+                                                </p>
+
+                                            )}
+
+                                    </div>
+
+
+                                    {result.weather_advice && (
+
+                                        <div className="weather-advice">
+
+                                            {typeof result.weather_advice === "string"
+                                                ? result.weather_advice
+                                                : result.weather_advice.advice ||
+                                                  result.weather_advice.message ||
+                                                  ""}
+
+                                        </div>
+
+                                    )}
+
+                                </div>
+
+                            )}
+
+
+
+                            {/* =================================================
+                                RECOMMENDED FOR YOU
+                            ================================================= */}
+
+                            <div className="personal-style">
+
+                                <div className="subsection-title">
+                                    ✨ Recommended For You
+                                </div>
+
+
+
+                                <div className="feature-row">
+
+
+                                    <div className="feature-box">
+
+                                        <span>
+                                            🧍
+                                        </span>
+
+                                        <small>
+                                            Body Shape
+                                        </small>
+
+                                        <strong>
+                                            {result.body_shape || "—"}
+                                        </strong>
+
+                                    </div>
+
+
+
+                                    <div className="feature-box">
+
+                                        <span>
+                                            🙂
+                                        </span>
+
+                                        <small>
+                                            Face Shape
+                                        </small>
+
+                                        <strong>
+                                            {result.face_shape || "—"}
+                                        </strong>
+
+                                    </div>
+
+
+
+                                    <div className="feature-box">
+
+                                        <span>
+                                            🎨
+                                        </span>
+
+                                        <small>
+                                            Skin Tone
+                                        </small>
+
+                                        <strong>
+                                            {result.skin_tone || "—"}
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                {/* COLORS */}
+
+                                <div className="recommendation-row">
+
+                                    <div className="recommendation-label">
+                                        🎨 Colors that suit you
+                                    </div>
+
+                                    <Tags
+                                        items={
+                                            result.preferred_colors
+                                        }
+                                    />
+
+                                </div>
+
+
+
+                                {/* TOP STYLES */}
+
+                                <div className="recommendation-row">
+
+                                    <div className="recommendation-label">
+                                        👚 Suitable Top Styles
+                                    </div>
+
+                                    <Tags
+                                        items={
+                                            result.recommended_top_styles
+                                        }
+                                    />
+
+                                </div>
+
+
+
+                                {/* BOTTOM STYLES */}
+
+                                {result.recommended_bottom_styles &&
+                                    result.recommended_bottom_styles.length > 0 && (
+
+                                        <div className="recommendation-row">
+
+                                            <div className="recommendation-label">
+                                                👖 Suitable Bottom Styles
+                                            </div>
+
+                                            <Tags
+                                                items={
+                                                    result.recommended_bottom_styles
+                                                }
+                                            />
+
+                                        </div>
+
+                                    )}
+
+
+
+                                {/* NECKLINES */}
+
+                                <div className="recommendation-row">
+
+                                    <div className="recommendation-label">
+                                        ✨ Suitable Necklines
+                                    </div>
+
+                                    <Tags
+                                        items={
+                                            result.recommended_necklines
+                                        }
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+
+                            {/* =================================================
+                                WARDROBE OUTFIT
+                            ================================================= */}
+
+                            {result.todays_look && (
+
+                                <div className="today-outfit">
+
+                                    <div className="subsection-title">
+                                        👚 Your Wardrobe Outfit
+                                    </div>
+
+
+                                    <div className="today-outfit-grid">
+
+
+                                        {/* TOP + BOTTOM */}
+
+                                        {result.todays_look.type ===
+                                            "top_bottom" && (
+
+                                            <>
+
+                                                {result.todays_look.top && (
+
+                                                    <div className="today-item">
+
+                                                        <div className="today-item-icon">
+                                                            👚
+                                                        </div>
+
+
+                                                        <div>
+
+                                                            <span>
+                                                                TOP
+                                                            </span>
+
+                                                            <h3>
+                                                                {
+                                                                    result.todays_look.top.category
+                                                                }
+                                                            </h3>
+
+                                                            <p>
+
+                                                                <i
+                                                                    className="color-dot"
+                                                                    style={{
+                                                                        background:
+                                                                            result.todays_look.top.color?.toLowerCase()
+                                                                    }}
+                                                                ></i>
+
+                                                                {
+                                                                    result.todays_look.top.color
+                                                                }
+
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                )}
+
+
+
+                                                {result.todays_look.bottom && (
+
+                                                    <div className="today-item">
+
+                                                        <div className="today-item-icon">
+                                                            👖
+                                                        </div>
+
+
+                                                        <div>
+
+                                                            <span>
+                                                                BOTTOM
+                                                            </span>
+
+                                                            <h3>
+                                                                {
+                                                                    result.todays_look.bottom.category
+                                                                }
+                                                            </h3>
+
+                                                            <p>
+
+                                                                <i
+                                                                    className="color-dot"
+                                                                    style={{
+                                                                        background:
+                                                                            result.todays_look.bottom.color?.toLowerCase()
+                                                                    }}
+                                                                ></i>
+
+                                                                {
+                                                                    result.todays_look.bottom.color
+                                                                }
+
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                )}
+
+
+
+                                                {result.todays_look.shoes && (
+
+                                                    <div className="today-item">
+
+                                                        <div className="today-item-icon">
+                                                            👟
+                                                        </div>
+
+
+                                                        <div>
+
+                                                            <span>
+                                                                SHOES
+                                                            </span>
+
+                                                            <h3>
+                                                                {
+                                                                    result.todays_look.shoes.category
+                                                                }
+                                                            </h3>
+
+                                                            <p>
+                                                                {
+                                                                    result.todays_look.shoes.color
+                                                                }
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                )}
+
+                                            </>
+
+                                        )}
+
+
+
+                                        {/* DRESS */}
+
+                                        {result.todays_look.type ===
+                                            "dress" && (
+
+                                            <>
+
+                                                {result.todays_look.dress && (
+
+                                                    <div className="today-item">
+
+                                                        <div className="today-item-icon">
+                                                            👗
+                                                        </div>
+
+
+                                                        <div>
+
+                                                            <span>
+                                                                DRESS
+                                                            </span>
+
+                                                            <h3>
+                                                                {
+                                                                    result.todays_look.dress.category
+                                                                }
+                                                            </h3>
+
+                                                            <p>
+                                                                {
+                                                                    result.todays_look.dress.color
+                                                                }
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                )}
+
+
+
+                                                {result.todays_look.shoes && (
+
+                                                    <div className="today-item">
+
+                                                        <div className="today-item-icon">
+                                                            👟
+                                                        </div>
+
+
+                                                        <div>
+
+                                                            <span>
+                                                                SHOES
+                                                            </span>
+
+                                                            <h3>
+                                                                {
+                                                                    result.todays_look.shoes.category
+                                                                }
+                                                            </h3>
+
+                                                            <p>
+                                                                {
+                                                                    result.todays_look.shoes.color
+                                                                }
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                )}
+
+                                            </>
+
+                                        )}
+
+                                    </div>
+
+                                </div>
+
+                            )}
+
+
+
+                            {/* =================================================
+                                REASONS
+                            ================================================= */}
+
+                            {result.reasons &&
+                                result.reasons.length > 0 && (
+
+                                    <div className="reasons-box">
+
+                                        <div className="subsection-title">
+                                            💡 Why this look is recommended
+                                        </div>
+
+
+                                        <div className="reason-list">
+
+                                            {result.reasons.map(
+                                                (reason, index) => (
+
+                                                    <div
+                                                        className="reason-item"
+                                                        key={index}
+                                                    >
+
+                                                        <span>
+                                                            ✓
+                                                        </span>
+
+                                                        <p>
+                                                            {reason}
+                                                        </p>
+
+                                                    </div>
+
+                                                )
+                                            )}
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+                        </section>
+
+                    )}
+
+
+
+                    {/* =================================================
+                        MY DIGITAL WARDROBE
+                    ================================================= */}
 
                     <section className="wardrobe-recommendation">
 
-                        <div className="section-heading">
+
+                        <div className="modern-section-header">
 
                             <div>
 
@@ -767,29 +1260,42 @@ setResult(
                                     Recommended From My Wardrobe 👗
                                 </h2>
 
+
+                                <p className="section-subtitle">
+                                    Pieces from your wardrobe selected by AI
+                                    to create your perfect style.
+                                </p>
+
                             </div>
 
 
-                            <span className="wardrobe-count">
-
-                                {result.wardrobe?.count || 0}
-                                {" "}
-                                Items
-
-                            </span>
+                            <div className="wardrobe-count">
+                                ✨ {result.wardrobe?.count || 0} Items
+                            </div>
 
                         </div>
+
 
 
                         {/* TOPS */}
 
                         {result.wardrobe?.tops?.length > 0 && (
 
-                            <div className="wardrobe-group">
+                            <div className="wardrobe-category">
 
-                                <h3>
-                                    👕 Tops
-                                </h3>
+                                <div className="category-title">
+
+                                    <span className="category-icon">
+                                        👕
+                                    </span>
+
+                                    <h3>
+                                        Tops
+                                    </h3>
+
+                                    <span className="category-line"></span>
+
+                                </div>
 
 
                                 <div className="wardrobe-grid">
@@ -798,19 +1304,27 @@ setResult(
                                         (item) => (
 
                                             <div
-                                                className="wardrobe-card"
+                                                className="modern-wardrobe-card"
                                                 key={item.id}
                                             >
 
-                                                <img
-                                                    src={getImageUrl(
-                                                        item.image_url
-                                                    )}
-                                                    alt={item.category}
-                                                />
+                                                <div className="wardrobe-image-wrapper">
+
+                                                    <img
+                                                        src={getImageUrl(
+                                                            item.image_url
+                                                        )}
+                                                        alt={item.category}
+                                                    />
+
+                                                    <span className="ai-picked-badge">
+                                                        ✨ AI Pick
+                                                    </span>
+
+                                                </div>
 
 
-                                                <div>
+                                                <div className="modern-wardrobe-info">
 
                                                     <h4>
                                                         {item.category}
@@ -818,7 +1332,11 @@ setResult(
 
 
                                                     <p>
-                                                        Color: {item.color}
+                                                        <span>
+                                                            Color
+                                                        </span>
+
+                                                        {item.color}
                                                     </p>
 
                                                 </div>
@@ -835,15 +1353,26 @@ setResult(
                         )}
 
 
+
                         {/* BOTTOMS */}
 
                         {result.wardrobe?.bottoms?.length > 0 && (
 
-                            <div className="wardrobe-group">
+                            <div className="wardrobe-category">
 
-                                <h3>
-                                    👖 Bottoms
-                                </h3>
+                                <div className="category-title">
+
+                                    <span className="category-icon">
+                                        👖
+                                    </span>
+
+                                    <h3>
+                                        Bottoms
+                                    </h3>
+
+                                    <span className="category-line"></span>
+
+                                </div>
 
 
                                 <div className="wardrobe-grid">
@@ -852,19 +1381,27 @@ setResult(
                                         (item) => (
 
                                             <div
-                                                className="wardrobe-card"
+                                                className="modern-wardrobe-card"
                                                 key={item.id}
                                             >
 
-                                                <img
-                                                    src={getImageUrl(
-                                                        item.image_url
-                                                    )}
-                                                    alt={item.category}
-                                                />
+                                                <div className="wardrobe-image-wrapper">
+
+                                                    <img
+                                                        src={getImageUrl(
+                                                            item.image_url
+                                                        )}
+                                                        alt={item.category}
+                                                    />
+
+                                                    <span className="ai-picked-badge">
+                                                        ✨ AI Pick
+                                                    </span>
+
+                                                </div>
 
 
-                                                <div>
+                                                <div className="modern-wardrobe-info">
 
                                                     <h4>
                                                         {item.category}
@@ -872,7 +1409,11 @@ setResult(
 
 
                                                     <p>
-                                                        Color: {item.color}
+                                                        <span>
+                                                            Color
+                                                        </span>
+
+                                                        {item.color}
                                                     </p>
 
                                                 </div>
@@ -889,15 +1430,26 @@ setResult(
                         )}
 
 
+
                         {/* SHOES */}
 
                         {result.wardrobe?.shoes?.length > 0 && (
 
-                            <div className="wardrobe-group">
+                            <div className="wardrobe-category">
 
-                                <h3>
-                                    👟 Shoes
-                                </h3>
+                                <div className="category-title">
+
+                                    <span className="category-icon">
+                                        👟
+                                    </span>
+
+                                    <h3>
+                                        Shoes
+                                    </h3>
+
+                                    <span className="category-line"></span>
+
+                                </div>
 
 
                                 <div className="wardrobe-grid">
@@ -906,19 +1458,27 @@ setResult(
                                         (item) => (
 
                                             <div
-                                                className="wardrobe-card"
+                                                className="modern-wardrobe-card"
                                                 key={item.id}
                                             >
 
-                                                <img
-                                                    src={getImageUrl(
-                                                        item.image_url
-                                                    )}
-                                                    alt={item.category}
-                                                />
+                                                <div className="wardrobe-image-wrapper">
+
+                                                    <img
+                                                        src={getImageUrl(
+                                                            item.image_url
+                                                        )}
+                                                        alt={item.category}
+                                                    />
+
+                                                    <span className="ai-picked-badge">
+                                                        ✨ AI Pick
+                                                    </span>
+
+                                                </div>
 
 
-                                                <div>
+                                                <div className="modern-wardrobe-info">
 
                                                     <h4>
                                                         {item.category}
@@ -926,7 +1486,11 @@ setResult(
 
 
                                                     <p>
-                                                        Color: {item.color}
+                                                        <span>
+                                                            Color
+                                                        </span>
+
+                                                        {item.color}
                                                     </p>
 
                                                 </div>
@@ -943,15 +1507,26 @@ setResult(
                         )}
 
 
+
                         {/* JACKETS */}
 
                         {result.wardrobe?.jackets?.length > 0 && (
 
-                            <div className="wardrobe-group">
+                            <div className="wardrobe-category">
 
-                                <h3>
-                                    🧥 Jackets
-                                </h3>
+                                <div className="category-title">
+
+                                    <span className="category-icon">
+                                        🧥
+                                    </span>
+
+                                    <h3>
+                                        Jackets
+                                    </h3>
+
+                                    <span className="category-line"></span>
+
+                                </div>
 
 
                                 <div className="wardrobe-grid">
@@ -960,19 +1535,27 @@ setResult(
                                         (item) => (
 
                                             <div
-                                                className="wardrobe-card"
+                                                className="modern-wardrobe-card"
                                                 key={item.id}
                                             >
 
-                                                <img
-                                                    src={getImageUrl(
-                                                        item.image_url
-                                                    )}
-                                                    alt={item.category}
-                                                />
+                                                <div className="wardrobe-image-wrapper">
+
+                                                    <img
+                                                        src={getImageUrl(
+                                                            item.image_url
+                                                        )}
+                                                        alt={item.category}
+                                                    />
+
+                                                    <span className="ai-picked-badge">
+                                                        ✨ AI Pick
+                                                    </span>
+
+                                                </div>
 
 
-                                                <div>
+                                                <div className="modern-wardrobe-info">
 
                                                     <h4>
                                                         {item.category}
@@ -980,7 +1563,11 @@ setResult(
 
 
                                                     <p>
-                                                        Color: {item.color}
+                                                        <span>
+                                                            Color
+                                                        </span>
+
+                                                        {item.color}
                                                     </p>
 
                                                 </div>
@@ -997,15 +1584,26 @@ setResult(
                         )}
 
 
+
                         {/* DRESSES */}
 
                         {result.wardrobe?.dresses?.length > 0 && (
 
-                            <div className="wardrobe-group">
+                            <div className="wardrobe-category">
 
-                                <h3>
-                                    👗 Dresses
-                                </h3>
+                                <div className="category-title">
+
+                                    <span className="category-icon">
+                                        👗
+                                    </span>
+
+                                    <h3>
+                                        Dresses
+                                    </h3>
+
+                                    <span className="category-line"></span>
+
+                                </div>
 
 
                                 <div className="wardrobe-grid">
@@ -1014,19 +1612,27 @@ setResult(
                                         (item) => (
 
                                             <div
-                                                className="wardrobe-card"
+                                                className="modern-wardrobe-card"
                                                 key={item.id}
                                             >
 
-                                                <img
-                                                    src={getImageUrl(
-                                                        item.image_url
-                                                    )}
-                                                    alt={item.category}
-                                                />
+                                                <div className="wardrobe-image-wrapper">
+
+                                                    <img
+                                                        src={getImageUrl(
+                                                            item.image_url
+                                                        )}
+                                                        alt={item.category}
+                                                    />
+
+                                                    <span className="ai-picked-badge">
+                                                        ✨ AI Pick
+                                                    </span>
+
+                                                </div>
 
 
-                                                <div>
+                                                <div className="modern-wardrobe-info">
 
                                                     <h4>
                                                         {item.category}
@@ -1034,7 +1640,11 @@ setResult(
 
 
                                                     <p>
-                                                        Color: {item.color}
+                                                        <span>
+                                                            Color
+                                                        </span>
+
+                                                        {item.color}
                                                     </p>
 
                                                 </div>
@@ -1051,7 +1661,8 @@ setResult(
                         )}
 
 
-                        {/* NO MATCHING WARDROBE */}
+
+                        {/* EMPTY WARDROBE */}
 
                         {!result.wardrobe?.tops?.length &&
                          !result.wardrobe?.bottoms?.length &&
@@ -1061,15 +1672,20 @@ setResult(
 
                             <div className="empty-wardrobe">
 
+                                <div className="empty-icon">
+                                    👗
+                                </div>
+
+
                                 <h3>
-                                    No matching clothing found
+                                    Your wardrobe is waiting ✨
                                 </h3>
 
 
                                 <p>
-                                    Add more clothes to your digital
-                                    wardrobe and our AI will use them
-                                    in your outfit recommendations.
+                                    Add more clothes to your digital wardrobe
+                                    and our AI will use them to create
+                                    personalized outfits.
                                 </p>
 
                             </div>
@@ -1079,173 +1695,233 @@ setResult(
                     </section>
 
 
-                    {/* =================================
-                        AI GENERATED OUTFIT
-                    ================================= */}
+
+                    {/* =================================================
+                        AI STYLED OUTFIT
+                    ================================================= */}
 
                     {result.outfit &&
-                     Object.keys(result.outfit).length > 0 && (
+                        Object.keys(result.outfit).length > 0 && (
 
-                        <section className="outfit-section">
+                            <section className="outfit-section">
 
-                            <p className="ai-label">
-                                AI STYLED OUTFIT
-                            </p>
-
-
-                            <h2>
-                                Your Recommended Outfit ✨
-                            </h2>
+                                <p className="ai-label">
+                                    AI STYLED OUTFIT
+                                </p>
 
 
-                            <div className="outfit-grid">
-
-                                {Object.entries(
-                                    result.outfit
-                                ).map(
-                                    ([type, item]) => (
-
-                                        <div
-                                            className="outfit-card"
-                                            key={type}
-                                        >
-
-                                            <img
-                                                src={getImageUrl(
-                                                    item.image_url
-                                                )}
-                                                alt={type}
-                                            />
+                                <h2>
+                                    Your Recommended Outfit ✨
+                                </h2>
 
 
-                                            <h3>
-                                                {type}
-                                            </h3>
+                                <p className="section-description">
+                                    A complete outfit created using your
+                                    wardrobe and personal style.
+                                </p>
 
 
-                                            <p>
-                                                {item.category}
-                                            </p>
+                                <div className="outfit-grid">
+
+                                    {Object.entries(
+                                        result.outfit
+                                    ).map(
+                                        ([type, item]) => {
+
+                                            if (!item) {
+                                                return null;
+                                            }
 
 
-                                            <p>
-                                                Color: {item.color}
-                                            </p>
+                                            return (
 
-                                        </div>
-
-                                    )
-                                )}
-
-                            </div>
-
-                        </section>
-
-                    )}
-
-
-                    
-                    {/* =================================
-                        REAL PRODUCTS
-                    ================================= */}
-                    {result.products && result.products.length > 0 && (
-                        <section className="real-products">
-                            <p className="ai-label">SHOP THE STYLE</p>
-                            <h2>Similar Real Products 🛍️</h2>
-
-                            <div className="real-products-grid">
-                                {result.products.map((product) => (
-                                    <div className="real-product-card" key={product.id}>
-                                        <div className="real-product-image">
-                                            <img
-                                                src={
-                                                    product.image_url ||
-                                                    "https://via.placeholder.com/400x400?text=Fashion"
-                                                }
-                                                alt={product.name}
-                                            />
-                                        </div>
-
-                                        <div className="real-product-info">
-                                            <h3>{product.name}</h3>
-
-                                            {product.product_url && (
-                                                <button
-                                                    type="button"
-                                                    className="shop-button"
-                                                    onClick={() => openProduct(product.product_url)}
+                                                <div
+                                                    className="outfit-card"
+                                                    key={type}
                                                 >
-                                                    View Real Product →
-                                                </button>
-                                            )}
-                                        </div>
+
+                                                    <div className="outfit-image-wrapper">
+
+                                                        <img
+                                                            src={getImageUrl(
+                                                                item.image_url
+                                                            )}
+                                                            alt={type}
+                                                        />
+
+                                                    </div>
+
+
+                                                    <div className="outfit-card-info">
+
+                                                        <span>
+                                                            {type}
+                                                        </span>
+
+
+                                                        <h3>
+                                                            {item.category}
+                                                        </h3>
+
+
+                                                        <p>
+                                                            {item.color}
+                                                        </p>
+
+                                                    </div>
+
+                                                </div>
+
+                                            );
+
+                                        }
+                                    )}
+
+                                </div>
+
+                            </section>
+
+                        )}
+
+
+
+                    {/* =================================================
+                        REAL PRODUCTS
+                    ================================================= */}
+
+                    {result.products &&
+                        result.products.length > 0 && (
+
+                            <section className="real-products">
+
+
+                                <div className="modern-section-header">
+
+                                    <div>
+
+                                        <p className="ai-label">
+                                            SHOP THE STYLE
+                                        </p>
+
+
+                                        <h2>
+                                            Similar Real Products 🛍️
+                                        </h2>
+
+
+                                        <p className="section-subtitle">
+                                            Complete your AI-recommended look
+                                            with real products you can explore.
+                                        </p>
+
                                     </div>
-                                ))}
-                            </div>
-                        </section>
-                    )}
-                     
+
+
+                                    <div className="shop-ai-badge">
+                                        ✨ AI Matched
+                                    </div>
+
+                                </div>
+
+
+
+                                <div className="real-products-grid">
+
+                                    {result.products.map(
+                                        (product) => (
+
+                                            <div
+                                                className="modern-product-card"
+                                                key={product.id}
+                                            >
+
+
+                                                <div className="product-image-wrapper">
+
+                                                    <img
+                                                        src={
+                                                            product.image_url ||
+                                                            "https://via.placeholder.com/400x400?text=Fashion"
+                                                        }
+                                                        alt={product.name}
+                                                    />
+
+
+                                                    <span className="product-ai-badge">
+                                                        ✨ AI Match
+                                                    </span>
+
+                                                </div>
+
+
+
+                                                <div className="modern-product-info">
+
+                                                    <p className="product-category">
+                                                        {product.category}
+                                                    </p>
+
+
+                                                    <h3>
+                                                        {product.name}
+                                                    </h3>
+
+
+
+                                                    {product.color && (
+
+                                                        <p className="product-color">
+                                                            Color: {product.color}
+                                                        </p>
+
+                                                    )}
+
+
+
+                                                    {product.product_url && (
+
+                                                        <button
+                                                            type="button"
+                                                            className="modern-shop-button"
+                                                            onClick={() =>
+                                                                openProduct(
+                                                                    product.product_url
+                                                                )
+                                                            }
+                                                        >
+
+                                                            View Real Product
+
+                                                            <span>
+                                                                →
+                                                            </span>
+
+                                                        </button>
+
+                                                    )}
+
+                                                </div>
+
+                                            </div>
+
+                                        )
+                                    )}
+
+                                </div>
+
+                            </section>
+
+                        )}
 
                 </section>
+
             )}
+
         </div>
+
     );
 
-    
-    const getUserLocation = () => {
+}
 
-    return new Promise((resolve) => {
-
-        if (!navigator.geolocation) {
-
-            resolve({
-                latitude: null,
-                longitude: null
-            });
-
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-
-            (position) => {
-
-                resolve({
-                    latitude:
-                        position.coords.latitude,
-
-                    longitude:
-                        position.coords.longitude
-                });
-
-            },
-
-            (error) => {
-
-                console.log(
-                    "Location permission denied:",
-                    error
-                );
-
-                resolve({
-                    latitude: null,
-                    longitude: null
-                });
-
-            },
-
-            {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 300000
-            }
-        );
-
-    });
-};
-
-
-};
-    
 
 export default AIAnalysis;

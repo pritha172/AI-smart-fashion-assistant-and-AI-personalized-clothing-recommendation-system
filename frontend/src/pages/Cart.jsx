@@ -1,396 +1,334 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../api";
+import "./Cart.css";
 
 function Cart() {
+    const navigate = useNavigate();
 
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-
-    // =====================================================
-    // GET USER
-    // =====================================================
-
     const getUser = () => {
+        const savedUser = localStorage.getItem("user");
 
-        const savedUser =
-            localStorage.getItem("user");
-
-        if (!savedUser) {
-            return null;
-        }
+        if (!savedUser) return null;
 
         try {
-
             return JSON.parse(savedUser);
-
-        }
-        catch {
-
+        } catch {
             return null;
-
         }
-
     };
-
-
-    // =====================================================
-    // FETCH CART
-    // =====================================================
 
     useEffect(() => {
-
         fetchCart();
-
     }, []);
 
-
     const fetchCart = async () => {
-
         const user = getUser();
 
-
         if (!user || !user.id) {
-
-            setError(
-                "Please login to view your cart."
-            );
-
+            setError("Please login to view your cart.");
             setLoading(false);
-
             return;
-
         }
-
 
         try {
+            const response = await API.get("/cart/", {
+                params: {
+                    user_id: user.id
+                }
+            });
 
-            const response =
-                await API.get(
-                    "/cart/",
-                    {
-                        params: {
-                            user_id: user.id
-                        }
-                    }
-                );
-
-
-            console.log(
-                "My cart:",
-                response.data
-            );
-
-
-            setCart(
-                response.data.cart || []
-            );
-
-        }
-        catch (error) {
-
-            console.error(
-                "Cart error:",
-                error
-            );
-
-            setError(
-                "Unable to load your cart."
-            );
-
-        }
-        finally {
-
+            setCart(response.data.cart || []);
+        } catch (err) {
+            console.error("Cart error:", err);
+            setError("Unable to load your cart.");
+        } finally {
             setLoading(false);
-
         }
-
     };
-
-
-    // =====================================================
-    // REMOVE FROM CART
-    // =====================================================
 
     const removeFromCart = async (cartId) => {
-
         const user = getUser();
 
-
         if (!user || !user.id) {
-
-            alert(
-                "Please login first."
-            );
-
+            alert("Please login first.");
             return;
-
         }
-
 
         try {
-
-            await API.delete(
-                `/cart/${cartId}`,
-                {
-                    params: {
-                        user_id: user.id
-                    }
+            await API.delete(`/cart/${cartId}`, {
+                params: {
+                    user_id: user.id
                 }
-            );
-
+            });
 
             await fetchCart();
-
+        } catch (err) {
+            console.error("Remove cart error:", err);
 
             alert(
-                "Product removed from cart."
-            );
-
-        }
-        catch (error) {
-
-            console.error(
-                "Remove cart error:",
-                error
-            );
-
-
-            if (error.response) {
-
-                alert(
-                    error.response.data.detail ||
+                err.response?.data?.detail ||
                     "Unable to remove product."
-                );
-
-            }
-            else {
-
-                alert(
-                    "Unable to remove product."
-                );
-
-            }
-
+            );
         }
-
     };
 
-
-    // =====================================================
-    // BUY / VIEW REAL PRODUCT
-    // =====================================================
-
     const buyProduct = (productUrl) => {
-
         if (!productUrl) {
-
             alert(
                 "Real product website link is not available."
             );
-
             return;
-
         }
-
 
         window.open(
             productUrl,
             "_blank",
             "noopener,noreferrer"
         );
-
     };
 
-
-    // =====================================================
-    // LOADING
-    // =====================================================
-
     if (loading) {
-
         return (
-
-            <div className="cart">
-
-                <h1>
-                    Shopping Cart
-                </h1>
-
-                <p>
-                    Loading your cart...
-                </p>
-
+            <div className="cart-page cart-state">
+                <div>
+                    <div className="cart-icon">🛍️</div>
+                    <h2>Loading Your Shopping Bag</h2>
+                    <p>Getting your selected pieces...</p>
+                </div>
             </div>
-
         );
-
     }
-
-
-    // =====================================================
-    // ERROR
-    // =====================================================
 
     if (error) {
-
         return (
+            <div className="cart-page cart-state">
+                <div className="cart-message">
+                    <div className="cart-icon">🛍️</div>
+                    <h2>Your Shopping Bag</h2>
+                    <p>{error}</p>
 
-            <div className="cart">
-
-                <h1>
-                    Shopping Cart
-                </h1>
-
-                <p>
-                    {error}
-                </p>
-
+                    <button
+                        className="cart-gradient-button"
+                        onClick={() => navigate("/login")}
+                    >
+                        Go to Login
+                    </button>
+                </div>
             </div>
-
         );
-
     }
 
+    return (
+        <div className="cart-page">
 
-    // =====================================================
-    // EMPTY CART
-    // =====================================================
+            {/* HEADER */}
+            <section className="cart-header">
 
-    if (cart.length === 0) {
+                <div>
+                    <p className="cart-eyebrow">
+                        YOUR FASHION PICKS
+                    </p>
 
-        return (
+                    <h1>
+                        Your Shopping
+                        <br />
+                        <span>Bag.</span>
+                    </h1>
 
-            <div className="cart">
+                    <p>
+                        Pieces you've chosen for your
+                        personal style.
+                    </p>
+                </div>
 
-                <h1>
-                    Shopping Cart
-                </h1>
+                <button
+                    className="continue-top"
+                    onClick={() => navigate("/products")}
+                >
+                    ← Continue Shopping
+                </button>
+
+            </section>
+
+            {cart.length === 0 ? (
 
                 <div className="empty-cart">
 
+                    <div className="empty-cart-icon">
+                        🛍️
+                    </div>
+
                     <h2>
-                        Your cart is empty
+                        Your shopping bag is empty
                     </h2>
 
                     <p>
-                        Add some fashion products
-                        from the Products page.
+                        Discover something beautiful
+                        for your wardrobe.
                     </p>
+
+                    <button
+                        className="cart-gradient-button"
+                        onClick={() => navigate("/products")}
+                    >
+                        Explore Products →
+                    </button>
 
                 </div>
 
-            </div>
+            ) : (
 
-        );
+                <div className="cart-layout">
 
-    }
+                    {/* ITEMS */}
+                    <div className="cart-items">
 
-
-    // =====================================================
-    // CART
-    // =====================================================
-
-    return (
-
-        <div className="cart">
-
-            <h1>
-                Shopping Cart
-            </h1>
-
-
-            <div className="cart-list">
-
-                {cart.map((item) => (
-
-                    <div
-                        className="cart-item"
-                        key={item.cart_id}
-                    >
-
-                        {/* =================================
-                            PRODUCT IMAGE
-                        ================================= */}
-
-                        <img
-                            src={
-                                item.image_url ||
-                                "https://via.placeholder.com/150"
-                            }
-                            alt={item.name}
-                            className="cart-product-image"
-                        />
-
-
-                        {/* =================================
-                            PRODUCT INFORMATION
-                        ================================= */}
-
-                        <div className="cart-product-info">
-
-                            <h3>
-                                {item.name}
-                            </h3>
-
-
-                            {item.brand && (
-
-                                <p>
-                                    Brand: {item.brand}
-                                </p>
-
-                            )}
-
+                        <div className="cart-items-heading">
+                            <div>
+                                <p>YOUR SELECTION</p>
+                                <h2>
+                                    {cart.length}{" "}
+                                    {cart.length === 1
+                                        ? "Item"
+                                        : "Items"}
+                                </h2>
+                            </div>
                         </div>
 
+                        {cart.map((item) => (
 
-                        {/* =================================
-                            ACTIONS
-                        ================================= */}
-
-                        <div className="cart-actions">
-
-                            <button
-                                onClick={() =>
-                                    removeFromCart(
-                                        item.cart_id
-                                    )
-                                }
-                                className="remove-cart-button"
+                            <article
+                                className="cart-item"
+                                key={item.cart_id}
                             >
 
-                                Remove
+                                <div className="cart-image-wrap">
 
-                            </button>
+                                    <img
+                                        src={
+                                            item.image_url ||
+                                            "https://via.placeholder.com/300x300?text=Fashion"
+                                        }
+                                        alt={item.name}
+                                    />
 
+                                </div>
 
-                            <button
-                                onClick={() =>
-                                    buyProduct(
-                                        item.product_url
-                                    )
-                                }
-                                className="buy-cart-button"
-                            >
+                                <div className="cart-product-info">
 
-                                Buy / View Product
+                                    <p className="cart-category">
+                                        FASHION PIECE
+                                    </p>
 
-                            </button>
+                                    <h3>
+                                        {item.name}
+                                    </h3>
 
-                        </div>
+                                    {item.brand && (
+                                        <p className="cart-brand">
+                                            {item.brand}
+                                        </p>
+                                    )}
+
+                                    <div className="cart-actions">
+
+                                        <button
+                                            className="cart-buy"
+                                            onClick={() =>
+                                                buyProduct(
+                                                    item.product_url
+                                                )
+                                            }
+                                        >
+                                            View Product →
+                                        </button>
+
+                                        <button
+                                            className="cart-remove"
+                                            onClick={() =>
+                                                removeFromCart(
+                                                    item.cart_id
+                                                )
+                                            }
+                                        >
+                                            Remove
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </article>
+
+                        ))}
 
                     </div>
 
-                ))}
+                    {/* SUMMARY */}
+                    <aside className="cart-summary">
 
-            </div>
+                        <p className="summary-label">
+                            SHOPPING BAG
+                        </p>
+
+                        <h2>
+                            Your Style
+                            <br />
+                            Awaits.
+                        </h2>
+
+                        <div className="summary-line">
+                            <span>Items</span>
+                            <strong>
+                                {cart.length}
+                            </strong>
+                        </div>
+
+                        <div className="summary-line">
+                            <span>Selection</span>
+                            <strong>
+                                Fashion
+                            </strong>
+                        </div>
+
+                        <div className="summary-divider" />
+
+                        <p className="summary-note">
+                            Prices and checkout are handled
+                            by the original product websites.
+                        </p>
+
+                        <button
+                            className="summary-button"
+                            onClick={() =>
+                                navigate("/products")
+                            }
+                        >
+                            Continue Shopping →
+                        </button>
+
+                        <button
+                            className="summary-ai-button"
+                            onClick={() =>
+                                navigate("/analysis")
+                            }
+                        >
+                            ✨ Get AI Styling
+                        </button>
+
+                    </aside>
+
+                </div>
+
+            )}
 
         </div>
-
     );
-
 }
 
 export default Cart;

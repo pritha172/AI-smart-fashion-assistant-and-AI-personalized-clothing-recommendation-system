@@ -1,123 +1,68 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../api";
+import "./Products.css";
 
 function Products() {
+    const navigate = useNavigate();
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [addingId, setAddingId] = useState(null);
-
-
-    // =====================================================
-    // GET PRODUCTS
-    // =====================================================
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         fetchProducts();
     }, []);
 
-
     const fetchProducts = async () => {
-
         try {
+            setLoading(true);
+            setError("");
 
             const response = await API.get("/products");
 
-            console.log("Products:", response.data);
-
             if (Array.isArray(response.data)) {
-
                 setProducts(response.data);
-
+            } else {
+                setProducts(response.data.products || []);
             }
-            else if (response.data.products) {
-
-                setProducts(response.data.products);
-
-            }
-            else {
-
-                setProducts([]);
-
-            }
-
-        }
-        catch (error) {
-
-            console.error(
-                "Products error:",
-                error
-            );
-
-            setError(
-                "Unable to load products."
-            );
-
-        }
-        finally {
-
+        } catch (err) {
+            console.error("Products error:", err);
+            setError("Unable to load products.");
+        } finally {
             setLoading(false);
-
         }
-
     };
 
-
-    // =====================================================
-    // ADD PRODUCT TO CART
-    // =====================================================
-
     const addToCart = async (product) => {
-
-        const savedUser =
-            localStorage.getItem("user");
+        const savedUser = localStorage.getItem("user");
 
         if (!savedUser) {
-
-            alert(
-                "Please login first to add products to your cart."
-            );
-
+            alert("Please login first to add products to your cart.");
+            navigate("/login");
             return;
-
         }
-
 
         let user;
 
         try {
-
             user = JSON.parse(savedUser);
-
-        }
-        catch {
-
-            alert(
-                "Invalid login information. Please login again."
-            );
-
+        } catch {
+            alert("Invalid login information. Please login again.");
             return;
-
         }
-
 
         if (!user.id) {
-
-            alert(
-                "User ID not found. Please login again."
-            );
-
+            alert("User ID not found. Please login again.");
             return;
-
         }
 
-
         try {
-
             setAddingId(product.id);
 
-            const response = await API.post(
+            await API.post(
                 "/cart/add",
                 null,
                 {
@@ -128,270 +73,194 @@ function Products() {
                 }
             );
 
-
-            console.log(
-                "Cart response:",
-                response.data
-            );
-
+            alert(`${product.name} added to your cart!`);
+        } catch (err) {
+            console.error("Add to cart error:", err);
 
             alert(
-                `${product.name} added to your cart!`
+                "Unable to add product: " +
+                    (err.response?.data?.detail ||
+                        "Server error")
             );
-
-        }
-        catch (error) {
-
-            console.error(
-                "Add to cart error:",
-                error
-            );
-
-
-            if (error.response) {
-
-                alert(
-                    "Unable to add product: " +
-                    (
-                        error.response.data.detail ||
-                        "Server error"
-                    )
-                );
-
-            }
-            else {
-
-                alert(
-                    "Unable to add product. Please check the backend."
-                );
-
-            }
-
-        }
-        finally {
-
+        } finally {
             setAddingId(null);
-
         }
-
     };
 
-
-    // =====================================================
-    // OPEN REAL PRODUCT WEBSITE
-    // =====================================================
-
     const openProduct = (productUrl) => {
-
         if (!productUrl) {
-
-            alert(
-                "Product website link is not available."
-            );
-
+            alert("Product website link is not available.");
             return;
-
         }
-
 
         window.open(
             productUrl,
             "_blank",
             "noopener,noreferrer"
         );
-
     };
 
+    const filteredProducts = products.filter((product) => {
+        const text = `
+            ${product.name || ""}
+            ${product.brand || ""}
+            ${product.category || ""}
+        `.toLowerCase();
 
-    // =====================================================
-    // LOADING
-    // =====================================================
+        return text.includes(search.toLowerCase());
+    });
 
     if (loading) {
-
         return (
-
-            <div className="products-page">
-
-                <div className="loading-box">
-
-                    <h2>
-                        Loading Products...
-                    </h2>
-
+            <div className="products-page products-state">
+                <div>
+                    <div className="products-loader-icon">✦</div>
+                    <h2>Curating Your Collection</h2>
                     <p>
-                        Finding the best fashion products for you.
+                        Finding fashion pieces for you...
                     </p>
-
                 </div>
-
             </div>
-
         );
-
     }
 
-
-    // =====================================================
-    // ERROR
-    // =====================================================
-
     if (error) {
-
         return (
-
-            <div className="products-page">
-
-                <div className="error-box">
-
-                    <h2>
-                        Something went wrong
-                    </h2>
-
-                    <p>
-                        {error}
-                    </p>
+            <div className="products-page products-state">
+                <div className="products-error">
+                    <h2>Something went wrong</h2>
+                    <p>{error}</p>
 
                     <button
                         onClick={fetchProducts}
-                        className="retry-button"
+                        className="gradient-product-button"
                     >
                         Try Again
                     </button>
-
                 </div>
-
             </div>
-
         );
-
     }
 
-
-    // =====================================================
-    // PRODUCTS PAGE
-    // =====================================================
-
     return (
-
         <div className="products-page">
 
-            {/* =========================================
-                HEADER
-            ========================================= */}
+            {/* HERO */}
+            <section className="products-hero">
 
-            <section className="products-header">
+                <div>
+                    <p className="products-label">
+                        AI SMART FASHION
+                    </p>
 
-                <p className="products-label">
-                    AI SMART FASHION
-                </p>
+                    <h1>
+                        Shop Your
+                        <br />
+                        <span>Perfect Style.</span>
+                    </h1>
 
-                <h1>
-                    Explore Our Collection
-                </h1>
+                    <p className="products-subtitle">
+                        Discover fashion pieces selected to
+                        complete your personal style.
+                    </p>
+                </div>
 
-                <p className="products-subtitle">
-
-                    Discover fashion pieces selected
-                    to help you create your perfect style.
-
-                </p>
+                <button
+                    className="cart-top-button"
+                    onClick={() => navigate("/cart")}
+                >
+                    🛍 Cart
+                </button>
 
             </section>
 
+            {/* TOOLBAR */}
+            <section className="products-toolbar">
 
-            {/* =========================================
-                TOOLBAR
-            ========================================= */}
-
-            <div className="product-toolbar">
-
-                <h2>
-                    Fashion Collection
-                </h2>
-
-                <span>
-                    {products.length} Products
-                </span>
-
-            </div>
-
-
-            {/* =========================================
-                EMPTY
-            ========================================= */}
-
-            {products.length === 0 ? (
-
-                <div className="empty-products">
-
+                <div>
+                    <p>THE COLLECTION</p>
                     <h2>
-                        No Products Available
+                        Fashion Pieces
                     </h2>
+                </div>
 
-                    <p>
-                        Products will appear here once
-                        they are added to the collection.
-                    </p>
+                <div className="products-search">
+
+                    <span>⌕</span>
+
+                    <input
+                        type="text"
+                        placeholder="Search products..."
+                        value={search}
+                        onChange={(e) =>
+                            setSearch(e.target.value)
+                        }
+                    />
 
                 </div>
 
+            </section>
+
+            <div className="products-count">
+                Showing {filteredProducts.length} of{" "}
+                {products.length} products
+            </div>
+
+            {/* PRODUCTS */}
+            {filteredProducts.length === 0 ? (
+                <div className="empty-products">
+                    <div>🛍️</div>
+                    <h2>No products found</h2>
+                    <p>
+                        Try searching for another fashion
+                        piece.
+                    </p>
+                </div>
             ) : (
+                <div className="product-grid">
 
-                <div className="product-container">
+                    {filteredProducts.map((product) => (
 
-                    {products.map((product) => (
-
-                        <div
+                        <article
                             className="product-card"
                             key={product.id}
                         >
 
-                            {/* =================================
-                                PRODUCT IMAGE
-                            ================================= */}
-
-                            <div className="product-image-container">
+                            <div className="product-image-wrap">
 
                                 <img
                                     src={
                                         product.image_url ||
-                                        "https://via.placeholder.com/400x400?text=Fashion"
+                                        "https://via.placeholder.com/500x500?text=Fashion"
                                     }
                                     alt={product.name}
                                     className="product-image"
                                 />
 
+                                <span className="product-badge">
+                                    AI STYLE
+                                </span>
+
                             </div>
 
-
-                            {/* =================================
-                                PRODUCT INFORMATION
-                            ================================= */}
-
                             <div className="product-info">
+
+                                <p className="product-category">
+                                    {product.category ||
+                                        "FASHION"}
+                                </p>
 
                                 <h3>
                                     {product.name}
                                 </h3>
 
-
                                 {product.brand && (
-
                                     <p className="product-brand">
                                         {product.brand}
                                     </p>
-
                                 )}
 
-
-                                {/* =================================
-                                    BUTTONS
-                                ================================= */}
-
-                                <div className="product-buttons">
-
-                                    {/* ADD TO CART */}
+                                <div className="product-actions">
 
                                     <button
                                         className="add-cart-button"
@@ -399,18 +268,15 @@ function Products() {
                                             addToCart(product)
                                         }
                                         disabled={
-                                            addingId === product.id
+                                            addingId ===
+                                            product.id
                                         }
                                     >
-
-                                        {addingId === product.id
+                                        {addingId ===
+                                        product.id
                                             ? "Adding..."
-                                            : "Add to Cart"}
-
+                                            : "+ Add to Cart"}
                                     </button>
-
-
-                                    {/* VIEW REAL PRODUCT */}
 
                                     <button
                                         className="view-product-button"
@@ -420,27 +286,43 @@ function Products() {
                                             )
                                         }
                                     >
-
-                                        View Product
-
+                                        View Product →
                                     </button>
 
                                 </div>
 
                             </div>
 
-                        </div>
+                        </article>
 
                     ))}
 
                 </div>
-
             )}
 
+            {/* BOTTOM CTA */}
+            <section className="products-bottom-cta">
+
+                <div>
+                    <p>READY TO STYLE?</p>
+
+                    <h2>
+                        Let AI build your
+                        <br />
+                        perfect outfit.
+                    </h2>
+                </div>
+
+                <button
+                    onClick={() => navigate("/analysis")}
+                >
+                    ✨ Open AI Assistant
+                </button>
+
+            </section>
+
         </div>
-
     );
-
 }
 
 export default Products;

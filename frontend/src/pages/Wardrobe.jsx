@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../api";
+import "./Wardrobe.css";
 
 function Wardrobe() {
+
+    const navigate = useNavigate();
 
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("");
@@ -29,7 +33,28 @@ function Wardrobe() {
 
 
     // =====================================================
-    // LOAD MY WARDROBE
+    // GET USER
+    // =====================================================
+
+    const getUser = () => {
+
+        const savedUser = localStorage.getItem("user");
+
+        if (!savedUser) {
+            return null;
+        }
+
+        try {
+            return JSON.parse(savedUser);
+        }
+        catch {
+            return null;
+        }
+    };
+
+
+    // =====================================================
+    // LOAD WARDROBE
     // =====================================================
 
     useEffect(() => {
@@ -44,35 +69,25 @@ function Wardrobe() {
             setLoading(true);
             setError("");
 
-            const savedUser =
-                localStorage.getItem("user");
+            const user = getUser();
 
-            if (!savedUser) {
-
+            if (!user) {
                 setError("Please login first.");
                 setLoading(false);
                 return;
-
             }
 
-            const user =
-                JSON.parse(savedUser);
-
             if (!user.id) {
-
                 setError(
                     "User ID not found. Please login again."
                 );
-
                 setLoading(false);
                 return;
-
             }
 
-            const response =
-                await API.get(
-                    `/wardrobe/my-wardrobe?user_id=${user.id}`
-                );
+            const response = await API.get(
+                `/wardrobe/my-wardrobe?user_id=${user.id}`
+            );
 
             setItems(
                 response.data.wardrobe || []
@@ -106,25 +121,23 @@ function Wardrobe() {
 
     const handleSearch = async () => {
 
+        if (!search.trim()) {
+            loadWardrobe();
+            return;
+        }
+
         try {
 
-            const savedUser =
-                localStorage.getItem("user");
+            const user = getUser();
 
-            if (!savedUser) {
-
+            if (!user) {
                 alert("Please login first.");
                 return;
-
             }
 
-            const user =
-                JSON.parse(savedUser);
-
-            const response =
-                await API.get(
-                    `/wardrobe/search?user_id=${user.id}&query=${encodeURIComponent(search)}`
-                );
+            const response = await API.get(
+                `/wardrobe/search?user_id=${user.id}&query=${encodeURIComponent(search)}`
+            );
 
             setItems(
                 response.data.wardrobe || []
@@ -167,53 +180,42 @@ function Wardrobe() {
 
         try {
 
-            const savedUser =
-                localStorage.getItem("user");
+            const user = getUser();
 
-            if (!savedUser) {
-
+            if (!user) {
                 alert("Please login first.");
                 return;
-
             }
 
-            const user =
-                JSON.parse(savedUser);
-
             if (!user.id) {
-
                 alert(
                     "User ID not found. Please login again."
                 );
-
                 return;
-
             }
 
-            const response =
-                await API.put(
-                    `/wardrobe/${wardrobeId}/like`,
-                    null,
-                    {
-                        params: {
-                            user_id: user.id
-                        }
+            const response = await API.put(
+                `/wardrobe/${wardrobeId}/like`,
+                null,
+                {
+                    params: {
+                        user_id: user.id
                     }
-                );
+                }
+            );
 
             const updatedLiked =
                 response.data.liked;
 
             setItems(
-                (previousItems) =>
-                    previousItems.map(
-                        (item) =>
-                            item.id === wardrobeId
-                                ? {
-                                    ...item,
-                                    liked: updatedLiked
-                                }
-                                : item
+                previousItems =>
+                    previousItems.map(item =>
+                        item.id === wardrobeId
+                            ? {
+                                ...item,
+                                liked: updatedLiked
+                            }
+                            : item
                     )
             );
 
@@ -224,15 +226,6 @@ function Wardrobe() {
                 "Like error:",
                 error
             );
-
-            if (error.response) {
-
-                console.error(
-                    "Backend response:",
-                    error.response.data
-                );
-
-            }
 
             alert(
                 "Unable to update like."
@@ -260,27 +253,18 @@ function Wardrobe() {
 
         try {
 
-            const savedUser =
-                localStorage.getItem("user");
+            const user = getUser();
 
-            if (!savedUser) {
-
+            if (!user) {
                 alert("Please login first.");
                 return;
-
             }
 
-            const user =
-                JSON.parse(savedUser);
-
             if (!user.id) {
-
                 alert(
                     "User ID not found. Please login again."
                 );
-
                 return;
-
             }
 
             await API.delete(
@@ -293,15 +277,11 @@ function Wardrobe() {
             );
 
             setItems(
-                (previousItems) =>
+                previousItems =>
                     previousItems.filter(
-                        (item) =>
+                        item =>
                             item.id !== wardrobeId
                     )
-            );
-
-            alert(
-                "Wardrobe item deleted successfully."
             );
 
         }
@@ -313,11 +293,6 @@ function Wardrobe() {
             );
 
             if (error.response) {
-
-                console.error(
-                    "Backend response:",
-                    error.response.data
-                );
 
                 alert(
                     error.response.data.detail ||
@@ -346,20 +321,23 @@ function Wardrobe() {
 
         return (
 
-            <div
-                style={{
-                    padding: "40px",
-                    textAlign: "center"
-                }}
-            >
+            <div className="wardrobe-page">
 
-                <h1>
-                    My Wardrobe
-                </h1>
+                <div className="wardrobe-loading">
 
-                <p>
-                    Loading your wardrobe...
-                </p>
+                    <div className="wardrobe-loading-icon">
+                        ✨
+                    </div>
+
+                    <h1>
+                        MY WARDROBE
+                    </h1>
+
+                    <p>
+                        Organizing your fashion collection...
+                    </p>
+
+                </div>
 
             </div>
 
@@ -376,20 +354,23 @@ function Wardrobe() {
 
         return (
 
-            <div
-                style={{
-                    padding: "40px",
-                    textAlign: "center"
-                }}
-            >
+            <div className="wardrobe-page">
 
-                <h1>
-                    My Wardrobe
-                </h1>
+                <div className="wardrobe-message">
 
-                <p>
-                    {error}
-                </p>
+                    <div className="wardrobe-message-icon">
+                        👗
+                    </div>
+
+                    <h1>
+                        MY WARDROBE
+                    </h1>
+
+                    <p>
+                        {error}
+                    </p>
+
+                </div>
 
             </div>
 
@@ -404,220 +385,227 @@ function Wardrobe() {
 
     return (
 
-        <div
-            style={{
-                padding: "30px",
-                maxWidth: "1200px",
-                margin: "0 auto"
-            }}
-        >
+        <div className="wardrobe-page">
 
             {/* =================================================
                 HEADER
             ================================================= */}
 
-            <div
-                style={{
-                    textAlign: "center",
-                    marginBottom: "30px"
-                }}
-            >
+            <section className="wardrobe-hero">
 
-                <h1>
-                    My Wardrobe
-                </h1>
+                <div>
 
-                <p>
-                    Manage your personal clothing collection
-                </p>
+                    <p className="wardrobe-eyebrow">
+                        YOUR PERSONAL COLLECTION
+                    </p>
 
-            </div>
+                    <h1>
+                        MY <span>WARDROBE.</span>
+                    </h1>
+
+                    <p className="wardrobe-subtitle">
+                        Your clothes, your style, your possibilities.
+                        Manage everything in one place and let AI
+                        help you create the perfect look.
+                    </p>
+
+                </div>
+
+                <div className="wardrobe-hero-badge">
+
+                    <span>✨</span>
+
+                    <div>
+                        <strong>
+                            {items.length}
+                        </strong>
+
+                        <small>
+                            {items.length === 1
+                                ? "ITEM"
+                                : "ITEMS"}
+                        </small>
+                    </div>
+
+                </div>
+
+            </section>
 
 
             {/* =================================================
-                SEARCH BAR
+                AI BANNER
             ================================================= */}
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "10px",
-                    marginBottom: "30px",
-                    flexWrap: "wrap"
-                }}
-            >
+            <section className="wardrobe-ai-banner">
 
-                <input
-                    type="text"
-                    placeholder="Search by category, color, season..."
-                    value={search}
-                    onChange={(e) =>
-                        setSearch(e.target.value)
-                    }
-                    onKeyDown={(e) => {
+                <div className="wardrobe-ai-icon">
+                    ✨
+                </div>
 
-                        if (e.key === "Enter") {
-                            handleSearch();
-                        }
+                <div className="wardrobe-ai-text">
 
-                    }}
-                    style={{
-                        width: "350px",
-                        padding: "12px 15px",
-                        border: "1px solid #ccc",
-                        borderRadius: "25px",
-                        fontSize: "15px"
-                    }}
-                />
+                    <p>
+                        AI STYLE ASSISTANT
+                    </p>
 
+                    <h2>
+                        Ready to create your next look?
+                    </h2>
+
+                    <span>
+                        Let AI analyze your wardrobe and
+                        recommend an outfit made for you.
+                    </span>
+
+                </div>
 
                 <button
-                    onClick={handleSearch}
-                    style={{
-                        padding: "12px 22px",
-                        border: "none",
-                        borderRadius: "25px",
-                        background: "#222",
-                        color: "white",
-                        cursor: "pointer",
-                        fontSize: "15px"
-                    }}
+                    onClick={() => navigate("/analysis")}
                 >
-
-                    🔍 Search
-
+                    GET AI LOOK →
                 </button>
 
+            </section>
 
-                {search && (
 
-                    <button
-                        onClick={clearSearch}
-                        style={{
-                            padding: "12px 22px",
-                            border: "1px solid #ccc",
-                            borderRadius: "25px",
-                            background: "white",
-                            cursor: "pointer",
-                            fontSize: "15px"
+            {/* =================================================
+                SEARCH
+            ================================================= */}
+
+            <section className="wardrobe-tools">
+
+                <div className="wardrobe-search">
+
+                    <span>
+                        🔍
+                    </span>
+
+                    <input
+                        type="text"
+                        placeholder="Search category, color, season..."
+                        value={search}
+                        onChange={(e) =>
+                            setSearch(e.target.value)
+                        }
+                        onKeyDown={(e) => {
+
+                            if (e.key === "Enter") {
+                                handleSearch();
+                            }
+
                         }}
-                    >
+                    />
 
-                        Clear
+                    {search && (
 
-                    </button>
+                        <button
+                            className="search-clear"
+                            onClick={clearSearch}
+                        >
+                            ✕
+                        </button>
 
-                )}
+                    )}
+
+                </div>
+
+                <button
+                    className="wardrobe-search-btn"
+                    onClick={handleSearch}
+                >
+                    SEARCH
+                </button>
+
+            </section>
+
+
+            {/* =================================================
+                COUNT
+            ================================================= */}
+
+            <div className="wardrobe-heading-row">
+
+                <div>
+
+                    <p className="wardrobe-section-label">
+                        YOUR COLLECTION
+                    </p>
+
+                    <h2>
+                        All Pieces
+                    </h2>
+
+                </div>
+
+                <span className="wardrobe-count">
+                    {items.length}{" "}
+                    {items.length === 1
+                        ? "piece"
+                        : "pieces"}
+                </span>
 
             </div>
 
 
             {/* =================================================
-                ITEM COUNT
-            ================================================= */}
-
-            <p
-                style={{
-                    marginBottom: "20px",
-                    fontWeight: "bold"
-                }}
-            >
-
-                {items.length}{" "}
-                {items.length === 1
-                    ? "Item"
-                    : "Items"}
-
-            </p>
-
-
-            {/* =================================================
-                EMPTY WARDROBE
+                EMPTY
             ================================================= */}
 
             {items.length === 0 ? (
 
-                <div
-                    style={{
-                        textAlign: "center",
-                        padding: "60px 20px",
-                        border: "1px solid #ddd",
-                        borderRadius: "15px"
-                    }}
-                >
+                <div className="wardrobe-empty">
+
+                    <div className="empty-icon">
+                        👗
+                    </div>
 
                     <h2>
-                        No clothing items found
+                        Your wardrobe is waiting.
                     </h2>
 
                     <p>
+                        No clothing items were found.
                         Try another search or add clothes
                         to your wardrobe.
                     </p>
+
+                    <button
+                        onClick={() => navigate("/analysis")}
+                    >
+                        ✨ GO TO AI ASSISTANT
+                    </button>
 
                 </div>
 
             ) : (
 
                 /* =================================================
-                   WARDROBE GRID
+                   GRID
                 ================================================= */
 
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns:
-                            "repeat(auto-fill, minmax(220px, 1fr))",
-                        gap: "25px"
-                    }}
-                >
+                <div className="wardrobe-grid">
 
                     {items.map((item) => (
 
-                        <div
+                        <article
+                            className="wardrobe-card"
                             key={item.id}
-                            style={{
-                                border: "1px solid #ddd",
-                                borderRadius: "15px",
-                                overflow: "hidden",
-                                background: "white",
-                                boxShadow:
-                                    "0 4px 15px rgba(0,0,0,0.08)"
-                            }}
                         >
 
-                            {/* =================================================
-                                IMAGE
-                            ================================================= */}
+                            {/* IMAGE */}
 
-                            <div
-                                style={{
-                                    width: "100%",
-                                    height: "250px",
-                                    background: "#f5f5f5"
-                                }}
-                            >
+                            <div className="wardrobe-image-wrap">
 
                                 <img
-                                    src={getImageUrl(item.image_url)}
+                                    src={getImageUrl(
+                                        item.image_url
+                                    )}
                                     alt={
                                         item.category ||
                                         "Wardrobe item"
                                     }
-                                    style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "cover"
-                                    }}
+                                    className="wardrobe-image"
                                     onError={(e) => {
-
-                                        console.error(
-                                            "Image failed:",
-                                            getImageUrl(
-                                                item.image_url
-                                            )
-                                        );
 
                                         e.currentTarget.style.display =
                                             "none";
@@ -625,141 +613,95 @@ function Wardrobe() {
                                     }}
                                 />
 
+                                <button
+                                    className={
+                                        item.liked
+                                            ? "wardrobe-like liked"
+                                            : "wardrobe-like"
+                                    }
+                                    onClick={() =>
+                                        handleLike(item.id)
+                                    }
+                                    title="Like"
+                                >
+                                    {item.liked
+                                        ? "❤️"
+                                        : "♡"}
+                                </button>
+
+                                <span className="wardrobe-category">
+                                    {item.category ||
+                                        "CLOTHING"}
+                                </span>
+
                             </div>
 
 
-                            {/* =================================================
-                                INFORMATION
-                            ================================================= */}
+                            {/* INFORMATION */}
 
-                            <div
-                                style={{
-                                    padding: "15px"
-                                }}
-                            >
+                            <div className="wardrobe-card-content">
 
-                                <h3
-                                    style={{
-                                        marginTop: "0",
-                                        marginBottom: "10px"
-                                    }}
-                                >
-
+                                <h3>
                                     {item.category ||
                                         "Clothing"}
-
                                 </h3>
 
+                                <div className="wardrobe-details">
 
-                                <p>
+                                    <div>
+                                        <span>
+                                            COLOR
+                                        </span>
 
-                                    <strong>
-                                        Color:
-                                    </strong>{" "}
+                                        <strong>
+                                            {item.color ||
+                                                "Unknown"}
+                                        </strong>
+                                    </div>
 
-                                    {item.color ||
-                                        "Unknown"}
+                                    <div>
+                                        <span>
+                                            SEASON
+                                        </span>
 
-                                </p>
+                                        <strong>
+                                            {item.season ||
+                                                "All"}
+                                        </strong>
+                                    </div>
 
+                                    <div>
+                                        <span>
+                                            OCCASION
+                                        </span>
 
-                                <p>
+                                        <strong>
+                                            {item.occasion ||
+                                                "Not specified"}
+                                        </strong>
+                                    </div>
 
-                                    <strong>
-                                        Season:
-                                    </strong>{" "}
-
-                                    {item.season ||
-                                        "All"}
-
-                                </p>
-
-
-                                <p>
-
-                                    <strong>
-                                        Occasion:
-                                    </strong>{" "}
-
-                                    {item.occasion ||
-                                        "Not specified"}
-
-                                </p>
+                                </div>
 
 
-                                {/* =================================================
-                                    ACTION BUTTONS
-                                ================================================= */}
-
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        gap: "10px",
-                                        marginTop: "15px"
-                                    }}
-                                >
-
-                                    {/* LIKE */}
+                                <div className="wardrobe-card-actions">
 
                                     <button
-                                        onClick={() =>
-                                            handleLike(
-                                                item.id
-                                            )
-                                        }
-                                        style={{
-                                            flex: "1",
-                                            padding: "10px",
-                                            border: "none",
-                                            borderRadius: "8px",
-                                            background:
-                                                item.liked
-                                                    ? "#ff4d6d"
-                                                    : "#eee",
-                                            color:
-                                                item.liked
-                                                    ? "white"
-                                                    : "#333",
-                                            cursor: "pointer",
-                                            fontSize: "16px"
-                                        }}
-                                    >
-
-                                        {item.liked
-                                            ? "❤️ Liked"
-                                            : "♡ Like"}
-
-                                    </button>
-
-
-                                    {/* DELETE */}
-
-                                    <button
+                                        className="wardrobe-delete"
                                         onClick={() =>
                                             handleDelete(
                                                 item.id
                                             )
                                         }
-                                        style={{
-                                            padding: "10px 14px",
-                                            border: "none",
-                                            borderRadius: "8px",
-                                            background: "#dc3545",
-                                            color: "white",
-                                            cursor: "pointer",
-                                            fontSize: "16px"
-                                        }}
                                     >
-
-                                        🗑️
-
+                                        🗑️ DELETE
                                     </button>
 
                                 </div>
 
                             </div>
 
-                        </div>
+                        </article>
 
                     ))}
 
