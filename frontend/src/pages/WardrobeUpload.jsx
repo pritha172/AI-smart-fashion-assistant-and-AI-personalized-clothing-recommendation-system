@@ -1,5 +1,6 @@
 import { useState } from "react";
 import API from "../api";
+import "./WardrobeUpload.css";
 
 function WardrobeUpload() {
 
@@ -8,6 +9,9 @@ function WardrobeUpload() {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
 
+    // =========================================
+    // FILE SELECTION
+    // =========================================
 
     const handleFileChange = (e) => {
 
@@ -26,6 +30,10 @@ function WardrobeUpload() {
         setResult(null);
     };
 
+
+    // =========================================
+    // UPLOAD TO BACKEND
+    // =========================================
 
     const uploadWardrobe = async () => {
 
@@ -129,11 +137,6 @@ function WardrobeUpload() {
             );
 
 
-            alert(
-                "Clothing added to your wardrobe!"
-            );
-
-
         }
 
         catch (error) {
@@ -180,162 +183,471 @@ function WardrobeUpload() {
     };
 
 
+    // =========================================
+    // REMOVE SELECTED IMAGE
+    // =========================================
+
+    const removeImage = () => {
+
+        setFile(null);
+
+        setPreview("");
+
+        setResult(null);
+
+    };
+
+
+    // =========================================
+    // UI
+    // =========================================
+
     return (
 
-        <div
-            style={{
-                maxWidth: "700px",
-                margin: "40px auto",
-                padding: "30px",
-                textAlign: "center"
-            }}
-        >
-
-            <h1>
-                👗 Add to My Wardrobe
-            </h1>
+        <div className="wardrobe-upload-page">
 
 
-            <p>
-                Upload a photo of your clothing and
-                AI will automatically detect its category
-                and color.
-            </p>
+            {/* =========================================
+                PAGE HEADER
+            ========================================= */}
 
+            <section className="wardrobe-upload-header">
 
-            {/* FILE INPUT */}
-
-            <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-            />
-
-
-            {/* PREVIEW */}
-
-            {preview && (
-
-                <div
-                    style={{
-                        marginTop: "25px"
-                    }}
-                >
-
-                    <h3>
-                        Preview
-                    </h3>
-
-
-                    <img
-                        src={preview}
-                        alt="Wardrobe Preview"
-                        style={{
-                            width: "280px",
-                            height: "320px",
-                            objectFit: "cover",
-                            borderRadius: "15px",
-                            boxShadow:
-                                "0 5px 20px rgba(0,0,0,0.15)"
-                        }}
-                    />
-
+                <div className="wardrobe-mini-label">
+                    ✦ MY DIGITAL WARDROBE
                 </div>
 
-            )}
+                <h1>
+                    Add a New Piece
+                    <span> ✨</span>
+                </h1>
+
+                <p>
+                    Upload your clothing and let our AI
+                    automatically identify its category,
+                    color and occasion.
+                </p>
+
+            </section>
 
 
-            {/* UPLOAD BUTTON */}
 
-            <div
-                style={{
-                    marginTop: "25px"
-                }}
-            >
+            {/* =========================================
+                MAIN UPLOAD CARD
+            ========================================= */}
 
-                <button
-                    onClick={uploadWardrobe}
-                    disabled={
-                        loading ||
-                        !file
-                    }
-                    style={{
-                        padding:
-                            "12px 30px",
-                        border: "none",
-                        borderRadius:
-                            "25px",
-                        background:
-                            "linear-gradient(45deg,#ff6b6b,#9b5de5)",
-                        color: "white",
-                        fontSize:
-                            "16px",
-                        cursor:
-                            "pointer"
-                    }}
-                >
-
-                    {loading
-                        ? "AI Detecting..."
-                        : "Add to Wardrobe"
-                    }
-
-                </button>
-
-            </div>
+            <section className="wardrobe-upload-card">
 
 
-            {/* AI RESULT */}
+                {/* Decorative sparkles */}
 
-            {result && (
+                <span className="upload-sparkle sparkle-a">
+                    ✦
+                </span>
 
-                <div
-                    style={{
-                        marginTop: "30px",
-                        padding: "20px",
-                        borderRadius: "15px",
-                        background: "#f8f8f8"
-                    }}
-                >
+                <span className="upload-sparkle sparkle-b">
+                    ✦
+                </span>
 
-                    <h2>
-                        ✅ AI Detection Complete
-                    </h2>
+                <span className="upload-sparkle sparkle-c">
+                    ✦
+                </span>
 
 
-                    <p>
-                        <strong>
-                            Category:
-                        </strong>{" "}
-                        {result.category}
-                    </p>
 
+                {/* =========================================
+                    UPLOAD AREA
+                ========================================= */}
+
+                {!preview && (
+
+                    <label
+                        className="wardrobe-drop-zone"
+                        htmlFor="wardrobe-file"
+                    >
+
+                        <div className="wardrobe-upload-icon">
+                            👗
+                        </div>
+
+                        <h2>
+                            Upload your clothing
+                        </h2>
+
+                        <p>
+                            Choose a photo of a dress,
+                            top, bottom, jacket or any
+                            other fashion item.
+                        </p>
+
+                        <div className="choose-image-button">
+                            Choose Image
+                        </div>
+
+                        <span className="upload-hint">
+                            JPG, JPEG or PNG • Your image stays private
+                        </span>
+
+
+                        <input
+                            id="wardrobe-file"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                        />
+
+                    </label>
+
+                )}
+
+
+
+                {/* =========================================
+                    IMAGE PREVIEW
+                ========================================= */}
+
+                {preview && (
+
+                    <div className="wardrobe-preview-section">
+
+
+                        <div className="preview-header">
+
+                            <div>
+
+                                <span className="preview-label">
+                                    YOUR CLOTHING
+                                </span>
+
+                                <h2>
+                                    Ready for AI analysis ✨
+                                </h2>
+
+                            </div>
+
+
+                            <button
+                                className="remove-image-button"
+                                onClick={removeImage}
+                                type="button"
+                            >
+                                ✕
+                            </button>
+
+                        </div>
+
+
+
+                        <div className="wardrobe-preview-layout">
+
+
+                            {/* IMAGE */}
+
+                            <div className="wardrobe-preview-frame">
+
+                                <img
+                                    src={preview}
+                                    alt="Wardrobe Preview"
+                                />
+
+                            </div>
+
+
+
+                            {/* IMAGE INFO */}
+
+                            <div className="preview-information">
+
+                                <div className="preview-file-card">
+
+                                    <div className="file-icon">
+                                        🖼️
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            {file?.name}
+                                        </strong>
+
+                                        <span>
+                                            Ready to analyze
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div className="ai-info-box">
+
+                                    <div className="ai-info-icon">
+                                        ✨
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            AI will detect
+                                        </strong>
 
                                         <p>
-                        <strong>
-                            Color:
-                        </strong>{" "}
-                        {result.color}
-                    </p>
+                                            Category • Color • Occasion
+                                        </p>
 
+                                    </div>
+
+                                </div>
+
+
+                                <button
+                                    className="wardrobe-analyze-button"
+                                    onClick={uploadWardrobe}
+                                    disabled={loading}
+                                    type="button"
+                                >
+
+                                    {loading ? (
+
+                                        <>
+                                            <span className="wardrobe-spinner"></span>
+
+                                            AI is analyzing...
+                                        </>
+
+                                    ) : (
+
+                                        <>
+                                            ✨
+                                            Add to My Wardrobe
+                                        </>
+
+                                    )}
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                )}
+
+
+
+                {/* =========================================
+                    LOADING STATE
+                ========================================= */}
+
+                {loading && (
+
+                    <div className="ai-processing">
+
+                        <div className="processing-animation">
+                            ✨
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                AI is analyzing your clothing
+                            </strong>
+
+                            <p>
+                                Detecting category, color and occasion...
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                )}
+
+
+
+                {/* =========================================
+                    AI RESULT
+                ========================================= */}
+
+                {result && (
+
+                    <div className="wardrobe-result-card">
+
+
+                        <div className="result-success-icon">
+                            ✓
+                        </div>
+
+
+                        <div className="result-heading">
+
+                            <span>
+                                AI ANALYSIS COMPLETE
+                            </span>
+
+                            <h2>
+                                Added to Your Wardrobe ✨
+                            </h2>
+
+                            <p>
+                                Your clothing has been successfully
+                                analyzed and saved.
+                            </p>
+
+                        </div>
+
+
+
+                        <div className="wardrobe-result-grid">
+
+
+                            {/* CATEGORY */}
+
+                            <div className="wardrobe-result-item">
+
+                                <div className="result-item-icon category-result-icon">
+                                    👗
+                                </div>
+
+                                <span>
+                                    CATEGORY
+                                </span>
+
+                                <strong>
+                                    {result.category || "Not detected"}
+                                </strong>
+
+                            </div>
+
+
+
+                            {/* COLOR */}
+
+                            <div className="wardrobe-result-item">
+
+                                <div className="result-item-icon color-result-icon">
+                                    🎨
+                                </div>
+
+                                <span>
+                                    COLOR
+                                </span>
+
+                                <strong>
+                                    {result.color || "Not detected"}
+                                </strong>
+
+                            </div>
+
+
+
+                            {/* OCCASION */}
+
+                            <div className="wardrobe-result-item">
+
+                                <div className="result-item-icon occasion-result-icon">
+                                    ✨
+                                </div>
+
+                                <span>
+                                    OCCASION
+                                </span>
+
+                                <strong>
+                                    {result.occasion || "Not detected"}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+
+                        {/* USER */}
+
+                        <div className="wardrobe-saved-message">
+
+                            <span>
+                                💖
+                            </span>
+
+                            This item is now part of your
+                            personalized digital wardrobe.
+
+                        </div>
+
+
+                    </div>
+
+                )}
+
+            </section>
+
+
+
+            {/* =========================================
+                BOTTOM FEATURES
+            ========================================= */}
+
+            <section className="wardrobe-upload-features">
+
+
+                <div className="upload-feature">
+
+                    <div>
+                        ✨
+                    </div>
+
+                    <span>
+                        AI Powered
+                    </span>
 
                     <p>
-                        <strong>
-                            Occasion:
-                        </strong>{" "}
-                        {result.occasion}
+                        Automatic clothing detection
                     </p>
 
-
-                    <p>
-                        <strong>
-                            User ID:
-                        </strong>{" "}
-                        {result.user_id}
-                    </p>
                 </div>
 
-            )}
+
+
+                <div className="upload-feature">
+
+                    <div>
+                        🎨
+                    </div>
+
+                    <span>
+                        Smart Detection
+                    </span>
+
+                    <p>
+                        Category and color recognition
+                    </p>
+
+                </div>
+
+
+
+                <div className="upload-feature">
+
+                    <div>
+                        🔒
+                    </div>
+
+                    <span>
+                        Private
+                    </span>
+
+                    <p>
+                        Your wardrobe stays personal
+                    </p>
+
+                </div>
+
+
+            </section>
+
 
         </div>
 

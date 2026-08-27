@@ -1,0 +1,1072 @@
+/* =========================================================
+   AI SMART FASHION
+   WARDROBE UPLOAD PAGE
+========================================================= */
+
+.wardrobe-upload-page {
+    min-height: 100vh;
+
+    padding: 65px 7% 80px;
+
+    color: #211b2b;
+
+    background:
+        radial-gradient(
+            circle at 10% 5%,
+            rgba(236, 72, 153, 0.10),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 90% 10%,
+            rgba(139, 92, 246, 0.11),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #fff9fc 0%,
+            #f8f4ff 100%
+        );
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.wardrobe-upload-header {
+    max-width: 780px;
+
+    margin: 0 auto 45px;
+
+    text-align: center;
+}
+
+.wardrobe-mini-label {
+    margin-bottom: 13px;
+
+    color: #a855f7;
+
+    font-size: 12px;
+
+    font-weight: 900;
+
+    letter-spacing: 2.5px;
+}
+
+.wardrobe-upload-header h1 {
+    margin: 0 0 15px;
+
+    font-size: 44px;
+
+    line-height: 1.15;
+
+    letter-spacing: -1px;
+
+    font-weight: 800;
+}
+
+.wardrobe-upload-header h1 span {
+    display: inline-block;
+
+    color: #ec4899;
+}
+
+.wardrobe-upload-header p {
+    max-width: 680px;
+
+    margin: auto;
+
+    color: #756b7c;
+
+    font-size: 16px;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+.wardrobe-upload-card {
+    position: relative;
+
+    max-width: 1050px;
+
+    margin: auto;
+
+    padding: 45px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 5% 10%,
+            rgba(236,72,153,0.08),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 95% 90%,
+            rgba(139,92,246,0.08),
+            transparent 28%
+        ),
+        rgba(255,255,255,0.94);
+
+    border: 1px solid #eadff1;
+
+    border-radius: 30px;
+
+    box-shadow:
+        0 25px 70px rgba(80,40,100,0.10),
+        0 8px 25px rgba(80,40,100,0.04);
+}
+
+
+/* =========================================================
+   SPARKLES
+========================================================= */
+
+.upload-sparkle {
+    position: absolute;
+
+    color: #c084fc;
+
+    font-size: 20px;
+
+    pointer-events: none;
+
+    animation: uploadSparkle 3s ease-in-out infinite;
+}
+
+.sparkle-a {
+    top: 28px;
+    left: 45px;
+}
+
+.sparkle-b {
+    top: 85px;
+    right: 70px;
+
+    font-size: 14px;
+
+    animation-delay: .8s;
+}
+
+.sparkle-c {
+    bottom: 35px;
+    right: 35px;
+
+    font-size: 16px;
+
+    animation-delay: 1.4s;
+}
+
+@keyframes uploadSparkle {
+
+    0%,
+    100% {
+        opacity: .35;
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(-5px) scale(1.15);
+    }
+}
+
+
+/* =========================================================
+   UPLOAD DROP ZONE
+========================================================= */
+
+.wardrobe-drop-zone {
+    min-height: 390px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 45px 25px;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    border: 2px dashed #dfc9f0;
+
+    border-radius: 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(250,245,255,.85),
+            rgba(255,247,251,.85)
+        );
+
+    transition:
+        border-color .25s ease,
+        transform .25s ease,
+        background .25s ease;
+}
+
+.wardrobe-drop-zone:hover {
+    border-color: #c084fc;
+
+    transform: translateY(-2px);
+
+    background:
+        linear-gradient(
+            135deg,
+            #faf5ff,
+            #fff5fa
+        );
+}
+
+.wardrobe-drop-zone input {
+    display: none;
+}
+
+
+/* =========================================================
+   UPLOAD ICON
+========================================================= */
+
+.wardrobe-upload-icon {
+    width: 85px;
+    height: 85px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    border-radius: 26px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fce7f3,
+            #ede9fe
+        );
+
+    font-size: 40px;
+
+    box-shadow:
+        0 12px 30px rgba(168,85,247,.12);
+}
+
+.wardrobe-drop-zone h2 {
+    margin: 0 0 10px;
+
+    font-size: 27px;
+}
+
+.wardrobe-drop-zone > p {
+    max-width: 570px;
+
+    margin: 0 auto 25px;
+
+    color: #777;
+
+    line-height: 1.7;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   CHOOSE BUTTON
+========================================================= */
+
+.choose-image-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 13px 28px;
+
+    border-radius: 30px;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ec4899,
+            #8b5cf6
+        );
+
+    box-shadow:
+        0 10px 25px rgba(168,85,247,.23);
+
+    transition: .25s;
+}
+
+.wardrobe-drop-zone:hover .choose-image-button {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 15px 30px rgba(168,85,247,.30);
+}
+
+.upload-hint {
+    margin-top: 16px;
+
+    color: #aaa;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+.wardrobe-preview-section {
+    padding: 10px;
+}
+
+.preview-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    margin-bottom: 30px;
+}
+
+.preview-label {
+    color: #a855f7;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.5px;
+}
+
+.preview-header h2 {
+    margin: 7px 0 0;
+
+    font-size: 26px;
+}
+
+.remove-image-button {
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid #eee1f4;
+
+    border-radius: 50%;
+
+    background: white;
+
+    color: #777;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    transition: .2s;
+}
+
+.remove-image-button:hover {
+    background: #fff0f7;
+
+    color: #ec4899;
+
+    transform: rotate(5deg);
+}
+
+
+/* =========================================================
+   PREVIEW LAYOUT
+========================================================= */
+
+.wardrobe-preview-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(280px, 420px)
+        1fr;
+
+    gap: 45px;
+
+    align-items: center;
+}
+
+
+/* =========================================================
+   IMAGE FRAME
+========================================================= */
+
+.wardrobe-preview-frame {
+    height: 390px;
+
+    overflow: hidden;
+
+    border-radius: 25px;
+
+    border: 5px solid white;
+
+    background: #faf7ff;
+
+    box-shadow:
+        0 20px 45px rgba(70,40,80,.15),
+        0 0 0 1px #eadff1;
+}
+
+.wardrobe-preview-frame img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+/* =========================================================
+   PREVIEW INFORMATION
+========================================================= */
+
+.preview-information {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+}
+
+.preview-file-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    background: #faf8ff;
+
+    border: 1px solid #eee5f4;
+}
+
+.file-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: white;
+
+    font-size: 22px;
+}
+
+.preview-file-card strong {
+    display: block;
+
+    max-width: 300px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 14px;
+}
+
+.preview-file-card span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #a855f7;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   AI INFO BOX
+========================================================= */
+
+.ai-info-box {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #faf5ff,
+            #fff6fb
+        );
+
+    border: 1px solid #eadcff;
+}
+
+.ai-info-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: white;
+
+    font-size: 21px;
+}
+
+.ai-info-box strong {
+    font-size: 14px;
+}
+
+.ai-info-box p {
+    margin: 4px 0 0;
+
+    color: #777;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   ANALYZE BUTTON
+========================================================= */
+
+.wardrobe-analyze-button {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    margin-top: 7px;
+
+    padding: 16px 22px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ec4899,
+            #8b5cf6
+        );
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 12px 30px rgba(168,85,247,.23);
+
+    transition: .25s;
+}
+
+.wardrobe-analyze-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 17px 35px rgba(168,85,247,.30);
+}
+
+.wardrobe-analyze-button:disabled {
+    opacity: .65;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   SPINNER
+========================================================= */
+
+.wardrobe-spinner {
+    width: 16px;
+    height: 16px;
+
+    border: 2px solid rgba(255,255,255,.4);
+
+    border-top-color: white;
+
+    border-radius: 50%;
+
+    animation: wardrobeSpin .8s linear infinite;
+}
+
+@keyframes wardrobeSpin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   PROCESSING
+========================================================= */
+
+.ai-processing {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-top: 25px;
+
+    padding: 18px 20px;
+
+    border-radius: 18px;
+
+    background: #faf5ff;
+
+    border: 1px solid #eadcff;
+}
+
+.processing-animation {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: white;
+
+    font-size: 22px;
+
+    animation: processingPulse 1.2s infinite;
+}
+
+@keyframes processingPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+}
+
+.ai-processing strong {
+    font-size: 14px;
+}
+
+.ai-processing p {
+    margin: 4px 0 0;
+
+    color: #777;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+.wardrobe-result-card {
+    margin-top: 35px;
+
+    padding: 32px;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #fff8fc,
+            #f9f5ff
+        );
+
+    border: 1px solid #e8d8f2;
+
+    box-shadow:
+        0 18px 45px rgba(80,40,100,.08);
+}
+
+.result-success-icon {
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 18px;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fce7f3,
+            #ede9fe
+        );
+
+    color: #8b5cf6;
+
+    font-size: 25px;
+
+    font-weight: 900;
+}
+
+.result-heading > span {
+    color: #a855f7;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.5px;
+}
+
+.result-heading h2 {
+    margin: 7px 0 7px;
+
+    font-size: 26px;
+}
+
+.result-heading p {
+    margin: 0;
+
+    color: #777;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   RESULT GRID
+========================================================= */
+
+.wardrobe-result-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+
+    margin-top: 25px;
+}
+
+.wardrobe-result-item {
+    padding: 20px;
+
+    border-radius: 18px;
+
+    background: white;
+
+    border: 1px solid #eee5f4;
+
+    text-align: center;
+}
+
+.result-item-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 12px;
+
+    border-radius: 15px;
+
+    font-size: 22px;
+}
+
+.category-result-icon {
+    background: #f3e8ff;
+}
+
+.color-result-icon {
+    background: #fce7f3;
+}
+
+.occasion-result-icon {
+    background: #ede9fe;
+}
+
+.wardrobe-result-item > span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #999;
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+.wardrobe-result-item strong {
+    display: block;
+
+    color: #8b5cf6;
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   SAVED MESSAGE
+========================================================= */
+
+.wardrobe-saved-message {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 18px;
+
+    padding: 13px 16px;
+
+    border-radius: 14px;
+
+    background: #faf5ff;
+
+    color: #756b7c;
+
+    font-size: 12px;
+}
+
+.wardrobe-saved-message span {
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   BOTTOM FEATURES
+========================================================= */
+
+.wardrobe-upload-features {
+    max-width: 1050px;
+
+    margin: 25px auto 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+}
+
+.upload-feature {
+    padding: 22px;
+
+    text-align: center;
+
+    background: rgba(255,255,255,.75);
+
+    border: 1px solid #eee5f4;
+
+    border-radius: 20px;
+}
+
+.upload-feature > div {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 10px;
+
+    border-radius: 14px;
+
+    background: #faf5ff;
+
+    font-size: 20px;
+}
+
+.upload-feature span {
+    display: block;
+
+    font-size: 14px;
+
+    font-weight: 800;
+}
+
+.upload-feature p {
+    margin: 5px 0 0;
+
+    color: #888;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .wardrobe-upload-page {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    .wardrobe-upload-card {
+        padding: 30px;
+    }
+
+    .wardrobe-preview-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .wardrobe-preview-frame {
+        max-width: 420px;
+
+        width: 100%;
+
+        margin: auto;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .wardrobe-upload-page {
+        padding: 40px 5% 60px;
+    }
+
+    .wardrobe-upload-header h1 {
+        font-size: 34px;
+    }
+
+    .wardrobe-upload-header p {
+        font-size: 14px;
+    }
+
+    .wardrobe-upload-card {
+        padding: 20px;
+
+        border-radius: 24px;
+    }
+
+    .wardrobe-drop-zone {
+        min-height: 340px;
+
+        padding: 30px 18px;
+    }
+
+    .wardrobe-upload-icon {
+        width: 70px;
+        height: 70px;
+
+        font-size: 32px;
+    }
+
+    .wardrobe-drop-zone h2 {
+        font-size: 23px;
+    }
+
+    .wardrobe-preview-frame {
+        height: 350px;
+    }
+
+    .preview-header h2 {
+        font-size: 22px;
+    }
+
+    .wardrobe-result-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wardrobe-upload-features {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .wardrobe-upload-header h1 {
+        font-size: 29px;
+    }
+
+    .wardrobe-upload-card {
+        padding: 15px;
+    }
+
+    .wardrobe-preview-frame {
+        height: 300px;
+    }
+
+    .wardrobe-result-card {
+        padding: 22px 18px;
+    }
+
+}

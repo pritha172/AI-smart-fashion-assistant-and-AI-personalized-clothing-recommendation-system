@@ -3,14 +3,18 @@ import { useNavigate } from "react-router-dom";
 import API from "../api";
 import "./Profile.css";
 
+
 function getInitials(name = "") {
+
     return name
         .split(" ")
         .filter(Boolean)
         .map((part) => part[0])
         .join("")
         .toUpperCase();
+
 }
+
 
 function Profile() {
 
@@ -30,9 +34,11 @@ function Profile() {
         const savedUser =
             localStorage.getItem("user");
 
+
         if (!savedUser) {
             return null;
         }
+
 
         try {
 
@@ -59,7 +65,9 @@ function Profile() {
 
     const fetchProfile = async () => {
 
-        const user = getLoggedInUser();
+        const user =
+            getLoggedInUser();
+
 
         if (!user || !user.id) {
 
@@ -76,10 +84,8 @@ function Profile() {
 
         try {
 
-            console.log(
-                "Fetching profile for user:",
-                user.id
-            );
+            setLoading(true);
+            setError("");
 
 
             const response = await API.get(
@@ -107,7 +113,7 @@ function Profile() {
 
 
             setError(
-                "Unable to load your profile."
+                "Unable to load your profile. Please try again."
             );
 
         }
@@ -121,7 +127,7 @@ function Profile() {
 
 
     // =====================================================
-    // LOAD PROFILE WHEN PAGE OPENS
+    // LOAD PROFILE
     // =====================================================
 
     useEffect(() => {
@@ -145,9 +151,11 @@ function Profile() {
             "isLoggedIn"
         );
 
+
         alert(
             "Logged out successfully."
         );
+
 
         navigate(
             "/login"
@@ -166,11 +174,21 @@ function Profile() {
 
             <div className="profile-page">
 
-                <div className="profile-card">
+                <div className="profile-loading-card">
 
-                    <p className="profile-loading">
-                        Loading profile...
+                    <div className="loading-avatar">
+                        ✨
+                    </div>
+
+                    <h2>
+                        Loading Your Profile
+                    </h2>
+
+                    <p>
+                        Preparing your personal fashion dashboard...
                     </p>
+
+                    <div className="profile-loader"></div>
 
                 </div>
 
@@ -191,20 +209,41 @@ function Profile() {
 
             <div className="profile-page">
 
-                <div className="profile-card">
+                <div className="profile-error-card">
 
-                    <p className="profile-error">
+                    <div className="error-icon">
+                        !
+                    </div>
+
+                    <h2>
+                        Unable to Load Profile
+                    </h2>
+
+                    <p>
                         {error}
                     </p>
 
-                    <button
-                        className="logout-btn"
-                        onClick={() =>
-                            navigate("/login")
-                        }
-                    >
-                        Go to Login
-                    </button>
+
+                    <div className="error-actions">
+
+                        <button
+                            className="retry-btn"
+                            onClick={fetchProfile}
+                        >
+                            Try Again
+                        </button>
+
+
+                        <button
+                            className="login-btn"
+                            onClick={() =>
+                                navigate("/login")
+                            }
+                        >
+                            Go to Login
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -225,10 +264,18 @@ function Profile() {
 
             <div className="profile-page">
 
-                <div className="profile-card">
+                <div className="profile-error-card">
+
+                    <div className="error-icon">
+                        !
+                    </div>
+
+                    <h2>
+                        Profile Not Available
+                    </h2>
 
                     <p>
-                        Profile information not available.
+                        Profile information could not be found.
                     </p>
 
                 </div>
@@ -258,239 +305,562 @@ function Profile() {
 
         <div className="profile-page">
 
-            <div className="profile-card">
+
+            {/* =============================================
+                HERO SECTION
+            ============================================= */}
+
+            <section className="profile-hero">
+
+                <p className="profile-label">
+                    MY FASHION PROFILE
+                </p>
+
+
+                <h1>
+                    Your Personal Style Space ✨
+                </h1>
+
+
+                <p className="profile-hero-text">
+                    View your fashion preferences, AI style
+                    analysis and wardrobe activity all in one place.
+                </p>
+
+            </section>
+
+
+            <div className="profile-container">
 
 
                 {/* =========================================
-                    PROFILE HEADER
+                    PROFILE MAIN CARD
                 ========================================= */}
 
-                <div className="profile-header">
+                <section className="profile-main-card">
 
-                    <div className="profile-avatar">
 
-                        {getInitials(
-                            user.name
-                        )}
+                    {/* =====================================
+                        PROFILE HEADER
+                    ===================================== */}
+
+                    <div className="profile-cover">
+
+                        <div className="profile-cover-pattern">
+                            ✦ &nbsp; ✧ &nbsp; ✦
+                        </div>
 
                     </div>
 
 
-                    <div>
-
-                        <p className="profile-name">
-
-                            {user.name}
-
-                        </p>
+                    <div className="profile-user-section">
 
 
-                        <p className="profile-email">
+                        <div className="profile-avatar">
 
-                            {user.email}
+                            {getInitials(
+                                user.name
+                            )}
 
-                        </p>
+                        </div>
+
+
+                        <div className="profile-user-info">
+
+                            <p className="welcome-text">
+                                Welcome back
+                            </p>
+
+
+                            <h2>
+                                {user.name || "Fashion Lover"}
+                            </h2>
+
+
+                            <p className="profile-email">
+
+                                {user.email || "No email available"}
+
+                            </p>
+
+
+                            <span className="fashion-member">
+
+                                ✨ AI Fashion Member
+
+                            </span>
+
+                        </div>
 
                     </div>
-
-                </div>
-
-
-                {/* =========================================
-                    PROFILE BODY
-                ========================================= */}
-
-                <div className="profile-body">
 
 
                     {/* =====================================
                         STATISTICS
                     ===================================== */}
 
-                    <div className="stat-grid">
+                    <div className="profile-stats">
 
 
-                        <div className="stat-card stat-pink">
+                        <div className="profile-stat-card">
 
-                            <p className="stat-value">
+                            <div className="stat-icon wardrobe-icon">
+                                👗
+                            </div>
 
-                                {profile.wardrobe_count ?? 0}
 
-                            </p>
+                            <div>
 
-                            <p className="stat-label">
+                                <p className="stat-number">
 
-                                Wardrobe items
+                                    {profile.wardrobe_count ?? 0}
 
-                            </p>
+                                </p>
+
+
+                                <p className="stat-title">
+
+                                    Wardrobe Items
+
+                                </p>
+
+                            </div>
 
                         </div>
 
 
-                        <div className="stat-card stat-purple">
+                        <div className="profile-stat-card">
 
-                            <p className="stat-value">
+                            <div className="stat-icon cart-icon">
+                                🛍️
+                            </div>
 
-                                {profile.cart_count ?? 0}
 
-                            </p>
+                            <div>
 
-                            <p className="stat-label">
+                                <p className="stat-number">
 
-                                Cart items
+                                    {profile.cart_count ?? 0}
 
-                            </p>
+                                </p>
+
+
+                                <p className="stat-title">
+
+                                    Cart Items
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div className="profile-stat-card">
+
+                            <div className="stat-icon ai-icon">
+                                ✨
+                            </div>
+
+
+                            <div>
+
+                                <p className="stat-number">
+
+                                    {analysis.body_shape
+                                        ? "✓"
+                                        : "—"}
+
+                                </p>
+
+
+                                <p className="stat-title">
+
+                                    AI Style Analysis
+
+                                </p>
+
+                            </div>
 
                         </div>
 
                     </div>
+
+                </section>
+
+
+                {/* =========================================
+                    TWO COLUMN CONTENT
+                ========================================= */}
+
+                <div className="profile-content-grid">
 
 
                     {/* =====================================
                         PERSONAL INFORMATION
                     ===================================== */}
 
-                    <p className="section-label">
-
-                        Personal information
-
-                    </p>
+                    <section className="profile-section-card">
 
 
-                    <div className="info-list">
+                        <div className="section-heading">
+
+                            <div>
+
+                                <p className="section-label">
+                                    ACCOUNT DETAILS
+                                </p>
+
+                                <h2>
+                                    Personal Information
+                                </h2>
+
+                            </div>
 
 
-                        <div className="info-row">
-
-                            <span className="info-key">
-
-                                Name
-
-                            </span>
-
-                            <span className="info-value">
-
-                                {user.name || "—"}
-
-                            </span>
-
-                        </div>
-
-
-                        <div className="info-row">
-
-                            <span className="info-key">
-
-                                Email
-
-                            </span>
-
-                            <span className="info-value">
-
-                                {user.email || "—"}
-
+                            <span className="section-icon">
+                                👤
                             </span>
 
                         </div>
 
 
-                        <div className="info-row">
+                        <div className="profile-info-list">
 
-                            <span className="info-key">
 
-                                Gender
+                            <div className="profile-info-item">
 
-                            </span>
+                                <div className="info-icon">
+                                    👤
+                                </div>
 
-                            <span className="info-value">
 
-                                {user.gender || "—"}
+                                <div>
 
-                            </span>
+                                    <p>
+                                        Full Name
+                                    </p>
+
+                                    <h4>
+                                        {user.name || "—"}
+                                    </h4>
+
+                                </div>
+
+                            </div>
+
+
+                            <div className="profile-info-item">
+
+                                <div className="info-icon">
+                                    ✉️
+                                </div>
+
+
+                                <div>
+
+                                    <p>
+                                        Email Address
+                                    </p>
+
+                                    <h4>
+                                        {user.email || "—"}
+                                    </h4>
+
+                                </div>
+
+                            </div>
+
+
+                            <div className="profile-info-item">
+
+                                <div className="info-icon">
+                                    ⚧
+                                </div>
+
+
+                                <div>
+
+                                    <p>
+                                        Gender
+                                    </p>
+
+                                    <h4>
+                                        {user.gender || "Not specified"}
+                                    </h4>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
-
-                        <div className="info-row">
-
-                            <span className="info-key">
-
-                                Skin tone
-
-                            </span>
-
-                            <span className="info-value">
-
-                                {analysis.skin_tone || "Not analyzed"}
-
-                            </span>
-
-                        </div>
-
-                    </div>
+                    </section>
 
 
                     {/* =====================================
                         AI FASHION PROFILE
                     ===================================== */}
 
-                    <p className="section-label">
-
-                        AI Fashion Profile
-
-                    </p>
+                    <section className="profile-section-card ai-profile-card">
 
 
-                    <div className="badge-row">
+                        <div className="section-heading">
+
+                            <div>
+
+                                <p className="section-label">
+                                    AI PERSONALIZATION
+                                </p>
+
+                                <h2>
+                                    Your AI Fashion Profile
+                                </h2>
+
+                            </div>
 
 
-                        <span className="badge">
+                            <span className="section-icon">
+                                ✨
+                            </span>
 
-                            Body:{" "}
-
-                            {analysis.body_shape ||
-                                "Not analyzed"}
-
-                        </span>
+                        </div>
 
 
-                        <span className="badge">
+                        <p className="ai-profile-description">
 
-                            Face:{" "}
+                            Your AI analysis helps create personalized
+                            fashion recommendations based on your
+                            unique features.
 
-                            {analysis.face_shape ||
-                                "Not analyzed"}
-
-                        </span>
+                        </p>
 
 
-                        <span className="badge">
+                        <div className="ai-style-grid">
 
-                            Skin:{" "}
 
-                            {analysis.skin_tone ||
-                                "Not analyzed"}
+                            <div className="ai-style-card">
 
-                        </span>
+                                <span>
+                                    🧍
+                                </span>
+
+                                <p>
+                                    Body Shape
+                                </p>
+
+                                <h4>
+                                    {analysis.body_shape ||
+                                        "Not analyzed"}
+                                </h4>
+
+                            </div>
+
+
+                            <div className="ai-style-card">
+
+                                <span>
+                                    🙂 
+                                </span>
+
+                                <p>
+                                    Face Shape
+                                </p>
+
+                                <h4>
+                                    {analysis.face_shape ||
+                                        "Not analyzed"}
+                                </h4>
+
+                            </div>
+
+
+                            <div className="ai-style-card">
+
+                                <span>
+                                    🎨
+                                </span>
+
+                                <p>
+                                    Skin Tone
+                                </p>
+
+                                <h4>
+                                    {analysis.skin_tone ||
+                                        "Not analyzed"}
+                                </h4>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            className="analyze-style-btn"
+                            onClick={() =>
+                                navigate("/analysis")
+                            }
+                        >
+
+                            ✨ Analyze My Style
+
+                        </button>
+
+                    </section>
+
+                </div>
+
+
+                {/* =========================================
+                    QUICK ACTIONS
+                ========================================= */}
+
+                <section className="quick-actions-section">
+
+                    <div className="section-heading">
+
+                        <div>
+
+                            <p className="section-label">
+                                QUICK ACCESS
+                            </p>
+
+                            <h2>
+                                Explore Your Fashion Space
+                            </h2>
+
+                        </div>
 
                     </div>
 
 
-                    {/* =====================================
-                        LOGOUT
-                    ===================================== */}
+                    <div className="quick-actions-grid">
+
+
+                        <button
+                            className="quick-action-card"
+                            onClick={() =>
+                                navigate("/wardrobe")
+                            }
+                        >
+
+                            <span>
+                                👗
+                            </span>
+
+                            <div>
+
+                                <h3>
+                                    My Wardrobe
+                                </h3>
+
+                                <p>
+                                    Manage your clothing collection
+                                </p>
+
+                            </div>
+
+                            <b>
+                                →
+                            </b>
+
+                        </button>
+
+
+                        <button
+                            className="quick-action-card"
+                            onClick={() =>
+                                navigate("/cart")
+                            }
+                        >
+
+                            <span>
+                                🛒
+                            </span>
+
+                            <div>
+
+                                <h3>
+                                    My Cart
+                                </h3>
+
+                                <p>
+                                    View your selected fashion items
+                                </p>
+
+                            </div>
+
+                            <b>
+                                →
+                            </b>
+
+                        </button>
+
+
+                        <button
+                            className="quick-action-card"
+                            onClick={() =>
+                                navigate("/history")
+                            }
+                        >
+
+                            <span>
+                                🕒
+                            </span>
+
+                            <div>
+
+                                <h3>
+                                    Style History
+                                </h3>
+
+                                <p>
+                                    View your previous AI analyses
+                                </p>
+
+                            </div>
+
+                            <b>
+                                →
+                            </b>
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                {/* =========================================
+                    LOGOUT
+                ========================================= */}
+
+                <div className="profile-footer">
+
+                    <div>
+
+                        <h3>
+                            Want to switch accounts?
+                        </h3>
+
+                        <p>
+                            You can safely logout from your account here.
+                        </p>
+
+                    </div>
+
 
                     <button
                         className="logout-btn"
                         onClick={handleLogout}
                     >
 
-                        Logout
+                        Logout →
 
                     </button>
 
-
                 </div>
+
 
             </div>
 
@@ -499,5 +869,6 @@ function Profile() {
     );
 
 }
+
 
 export default Profile;

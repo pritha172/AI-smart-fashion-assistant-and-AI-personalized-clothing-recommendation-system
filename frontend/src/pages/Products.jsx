@@ -36,6 +36,10 @@ function Products() {
         }
     };
 
+    // =====================================================
+    // ADD PRODUCT TO CART
+    // =====================================================
+
     const addToCart = async (product) => {
         const savedUser = localStorage.getItem("user");
 
@@ -79,13 +83,19 @@ function Products() {
 
             alert(
                 "Unable to add product: " +
-                    (err.response?.data?.detail ||
-                        "Server error")
+                (
+                    err.response?.data?.detail ||
+                    "Server error"
+                )
             );
         } finally {
             setAddingId(null);
         }
     };
+
+    // =====================================================
+    // OPEN REAL PRODUCT WEBSITE
+    // =====================================================
 
     const openProduct = (productUrl) => {
         if (!productUrl) {
@@ -100,6 +110,10 @@ function Products() {
         );
     };
 
+    // =====================================================
+    // SEARCH
+    // =====================================================
+
     const filteredProducts = products.filter((product) => {
         const text = `
             ${product.name || ""}
@@ -110,12 +124,22 @@ function Products() {
         return text.includes(search.toLowerCase());
     });
 
+    // =====================================================
+    // LOADING
+    // =====================================================
+
     if (loading) {
         return (
             <div className="products-page products-state">
                 <div>
-                    <div className="products-loader-icon">✦</div>
-                    <h2>Curating Your Collection</h2>
+                    <div className="products-loader-icon">
+                        ✦
+                    </div>
+
+                    <h2>
+                        Curating Your Collection
+                    </h2>
+
                     <p>
                         Finding fashion pieces for you...
                     </p>
@@ -124,12 +148,22 @@ function Products() {
         );
     }
 
+    // =====================================================
+    // ERROR
+    // =====================================================
+
     if (error) {
         return (
             <div className="products-page products-state">
                 <div className="products-error">
-                    <h2>Something went wrong</h2>
-                    <p>{error}</p>
+
+                    <h2>
+                        Something went wrong
+                    </h2>
+
+                    <p>
+                        {error}
+                    </p>
 
                     <button
                         onClick={fetchProducts}
@@ -137,18 +171,27 @@ function Products() {
                     >
                         Try Again
                     </button>
+
                 </div>
             </div>
         );
     }
 
+    // =====================================================
+    // PRODUCTS PAGE
+    // =====================================================
+
     return (
         <div className="products-page">
 
-            {/* HERO */}
+            {/* =================================================
+                HERO
+            ================================================= */}
+
             <section className="products-hero">
 
                 <div>
+
                     <p className="products-label">
                         AI SMART FASHION
                     </p>
@@ -156,13 +199,16 @@ function Products() {
                     <h1>
                         Shop Your
                         <br />
-                        <span>Perfect Style.</span>
+                        <span>
+                            Perfect Style.
+                        </span>
                     </h1>
 
                     <p className="products-subtitle">
                         Discover fashion pieces selected to
                         complete your personal style.
                     </p>
+
                 </div>
 
                 <button
@@ -174,19 +220,29 @@ function Products() {
 
             </section>
 
-            {/* TOOLBAR */}
+            {/* =================================================
+                TOOLBAR
+            ================================================= */}
+
             <section className="products-toolbar">
 
                 <div>
-                    <p>THE COLLECTION</p>
+
+                    <p>
+                        THE COLLECTION
+                    </p>
+
                     <h2>
                         Fashion Pieces
                     </h2>
+
                 </div>
 
                 <div className="products-search">
 
-                    <span>⌕</span>
+                    <span>
+                        ⌕
+                    </span>
 
                     <input
                         type="text"
@@ -201,22 +257,39 @@ function Products() {
 
             </section>
 
+            {/* =================================================
+                COUNT
+            ================================================= */}
+
             <div className="products-count">
                 Showing {filteredProducts.length} of{" "}
                 {products.length} products
             </div>
 
-            {/* PRODUCTS */}
+            {/* =================================================
+                PRODUCTS
+            ================================================= */}
+
             {filteredProducts.length === 0 ? (
+
                 <div className="empty-products">
-                    <div>🛍️</div>
-                    <h2>No products found</h2>
+
+                    <div>
+                        🛍️
+                    </div>
+
+                    <h2>
+                        No products found
+                    </h2>
+
                     <p>
-                        Try searching for another fashion
-                        piece.
+                        Try searching for another fashion piece.
                     </p>
+
                 </div>
+
             ) : (
+
                 <div className="product-grid">
 
                     {filteredProducts.map((product) => (
@@ -225,6 +298,8 @@ function Products() {
                             className="product-card"
                             key={product.id}
                         >
+
+                            {/* IMAGE */}
 
                             <div className="product-image-wrap">
 
@@ -243,11 +318,12 @@ function Products() {
 
                             </div>
 
+                            {/* INFORMATION */}
+
                             <div className="product-info">
 
                                 <p className="product-category">
-                                    {product.category ||
-                                        "FASHION"}
+                                    {product.category || "FASHION"}
                                 </p>
 
                                 <h3>
@@ -260,6 +336,8 @@ function Products() {
                                     </p>
                                 )}
 
+                                {/* ACTIONS */}
+
                                 <div className="product-actions">
 
                                     <button
@@ -268,12 +346,10 @@ function Products() {
                                             addToCart(product)
                                         }
                                         disabled={
-                                            addingId ===
-                                            product.id
+                                            addingId === product.id
                                         }
                                     >
-                                        {addingId ===
-                                        product.id
+                                        {addingId === product.id
                                             ? "Adding..."
                                             : "+ Add to Cart"}
                                     </button>
@@ -298,23 +374,33 @@ function Products() {
                     ))}
 
                 </div>
+
             )}
 
-            {/* BOTTOM CTA */}
+            {/* =================================================
+                BOTTOM CTA
+            ================================================= */}
+
             <section className="products-bottom-cta">
 
                 <div>
-                    <p>READY TO STYLE?</p>
+
+                    <p>
+                        READY TO STYLE?
+                    </p>
 
                     <h2>
                         Let AI build your
                         <br />
                         perfect outfit.
                     </h2>
+
                 </div>
 
                 <button
-                    onClick={() => navigate("/analysis")}
+                    onClick={() =>
+                        navigate("/analysis")
+                    }
                 >
                     ✨ Open AI Assistant
                 </button>

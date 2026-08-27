@@ -288,27 +288,28 @@
 
 
 /* =========================================================
-   PERSONALIZED AI HERO
+   PERSONALIZED AI HERO — FIXED
 ========================================================= */
 
-.ai-personalized-hero {
+.ai-page .ai-personalized-hero {
     position: relative;
-
+    width: 100%;
     max-width: 1200px;
-
     min-height: 390px;
 
     margin: 0 auto 45px;
-
     padding: 45px 55px;
 
-    display: flex;
-
-    align-items: center;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start;
 
     gap: 45px;
 
     overflow: hidden;
+
+    box-sizing: border-box;
 
     border-radius: 32px;
 
@@ -335,6 +336,565 @@
     box-shadow:
         0 25px 70px rgba(80, 40, 100, 0.10),
         0 8px 25px rgba(80, 40, 100, 0.05);
+}
+
+
+/* =========================================================
+   HERO PHOTO
+========================================================= */
+
+.ai-page .hero-photo-wrapper {
+    position: relative;
+
+    width: 230px;
+    min-width: 230px;
+    height: 230px;
+
+    flex: 0 0 230px;
+
+    z-index: 3;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.ai-page .hero-photo-ring {
+    width: 230px;
+    height: 230px;
+
+    padding: 8px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ec4899,
+            #a855f7,
+            #8b5cf6
+        );
+
+    box-shadow:
+        0 20px 45px rgba(139, 92, 246, 0.22);
+}
+
+
+.ai-page .hero-photo {
+    display: block;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    max-width: none;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    border: 5px solid white;
+
+    box-sizing: border-box;
+}
+
+
+.ai-page .hero-photo-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: white;
+
+    font-size: 65px;
+}
+
+
+/* =========================================================
+   HERO ARROW
+========================================================= */
+
+.ai-page .hero-arrow {
+    position: absolute;
+
+    right: -12px;
+    bottom: 12px;
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: white;
+
+    color: #9333ea;
+
+    font-size: 22px;
+    font-weight: 900;
+
+    box-shadow:
+        0 8px 25px rgba(70, 40, 80, 0.15);
+
+    z-index: 5;
+}
+
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.ai-page .hero-content {
+    position: relative;
+
+    z-index: 3;
+
+    flex: 1 1 auto;
+
+    min-width: 0;
+    max-width: 620px;
+
+    display: block;
+}
+
+
+.ai-page .hero-greeting {
+    margin: 0 0 10px;
+
+    color: #a855f7;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+.ai-page .hero-content h2 {
+    margin: 0 0 16px;
+
+    color: #211b2b;
+
+    font-size: 34px;
+    line-height: 1.2;
+
+    letter-spacing: -0.7px;
+}
+
+
+.ai-page .hero-description {
+    max-width: 570px;
+
+    margin: 0;
+
+    color: #6d6575;
+
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   HERO BADGES
+========================================================= */
+
+.ai-page .hero-badges {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 24px;
+}
+
+
+.ai-page .hero-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 9px 14px;
+
+    border-radius: 25px;
+
+    background: rgba(255, 255, 255, 0.88);
+
+    border: 1px solid #eadff1;
+
+    color: #7e22ce;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    box-shadow:
+        0 5px 15px rgba(80, 40, 100, 0.06);
+}
+
+
+/* =========================================================
+   FASHION DECORATION
+========================================================= */
+
+.ai-page .fashion-decoration {
+    position: absolute;
+
+    right: 25px;
+    bottom: 0;
+
+    width: 210px;
+    height: 280px;
+
+    opacity: 0.82;
+
+    pointer-events: none;
+
+    z-index: 1;
+}
+
+
+.ai-page .clothing-rack {
+    position: absolute;
+
+    right: 35px;
+    bottom: 45px;
+
+    width: 125px;
+    height: 190px;
+}
+
+
+.ai-page .rack-top {
+    position: absolute;
+
+    top: 15px;
+    left: 5px;
+
+    width: 115px;
+    height: 3px;
+
+    border-radius: 5px;
+
+    background: #c4b5c9;
+}
+
+
+.ai-page .rack-top::before,
+.ai-page .rack-top::after {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+
+    width: 3px;
+    height: 175px;
+
+    background: #c4b5c9;
+
+    border-radius: 5px;
+}
+
+
+.ai-page .rack-top::before {
+    left: 4px;
+
+    transform: rotate(5deg);
+
+    transform-origin: top;
+}
+
+
+.ai-page .rack-top::after {
+    right: 4px;
+
+    transform: rotate(-5deg);
+
+    transform-origin: top;
+}
+
+
+/* =========================================================
+   HANGERS
+========================================================= */
+
+.ai-page .hanger {
+    position: absolute;
+
+    z-index: 2;
+
+    font-size: 45px;
+
+    filter:
+        drop-shadow(
+            0 7px 10px rgba(80, 40, 100, 0.12)
+        );
+}
+
+
+.ai-page .hanger-one {
+    top: 28px;
+    left: 4px;
+
+    transform: rotate(-5deg);
+}
+
+
+.ai-page .hanger-two {
+    top: 48px;
+    left: 38px;
+
+    transform: rotate(2deg);
+}
+
+
+.ai-page .hanger-three {
+    top: 32px;
+    right: -2px;
+
+    transform: rotate(6deg);
+}
+
+
+/* =========================================================
+   PLANT
+========================================================= */
+
+.ai-page .fashion-plant {
+    position: absolute;
+
+    right: 0;
+    bottom: 45px;
+
+    font-size: 42px;
+
+    transform: rotate(-5deg);
+
+    filter:
+        drop-shadow(
+            0 8px 10px rgba(60, 40, 70, 0.10)
+        );
+}
+
+
+/* =========================================================
+   PLATFORM
+========================================================= */
+
+.ai-page .fashion-platform {
+    position: absolute;
+
+    right: 10px;
+    bottom: 25px;
+
+    width: 180px;
+    height: 18px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #eadff1,
+            #f7edf8,
+            #eadff1
+        );
+
+    box-shadow:
+        0 10px 20px rgba(70, 40, 80, 0.10);
+}
+
+
+/* =========================================================
+   SPARKLES
+========================================================= */
+
+.ai-page .hero-sparkle {
+    position: absolute;
+
+    z-index: 2;
+
+    color: #c084fc;
+
+    font-size: 22px;
+
+    animation:
+        heroSparkle 3s ease-in-out infinite;
+
+    pointer-events: none;
+}
+
+
+.ai-page .sparkle-one {
+    top: 35px;
+    left: 35%;
+}
+
+
+.ai-page .sparkle-two {
+    top: 75px;
+    right: 32%;
+
+    font-size: 15px;
+
+    animation-delay: 0.8s;
+}
+
+
+.ai-page .sparkle-three {
+    bottom: 50px;
+    left: 48%;
+
+    font-size: 17px;
+
+    animation-delay: 1.5s;
+}
+
+
+@keyframes heroSparkle {
+
+    0%,
+    100% {
+        opacity: 0.45;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+    50% {
+        opacity: 1;
+
+        transform:
+            translateY(-6px)
+            scale(1.15);
+    }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .ai-page .ai-personalized-hero {
+        padding: 40px;
+
+        gap: 30px;
+    }
+
+    .ai-page .hero-photo-wrapper,
+    .ai-page .hero-photo-ring {
+        width: 200px;
+        min-width: 200px;
+        height: 200px;
+    }
+
+    .ai-page .hero-photo-wrapper {
+        flex-basis: 200px;
+    }
+
+    .ai-page .hero-content h2 {
+        font-size: 30px;
+    }
+
+    .ai-page .fashion-decoration {
+        opacity: 0.22;
+
+        right: -20px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .ai-page .ai-personalized-hero {
+        min-height: auto;
+
+        padding: 35px 25px;
+
+        display: flex !important;
+        flex-direction: column !important;
+
+        text-align: center;
+
+        gap: 25px;
+    }
+
+    .ai-page .hero-photo-wrapper,
+    .ai-page .hero-photo-ring {
+        width: 180px;
+        min-width: 180px;
+        height: 180px;
+    }
+
+    .ai-page .hero-photo-wrapper {
+        flex-basis: 180px;
+    }
+
+    .ai-page .hero-content {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .ai-page .hero-content h2 {
+        font-size: 27px;
+    }
+
+    .ai-page .hero-description {
+        font-size: 14px;
+    }
+
+    .ai-page .hero-badges {
+        justify-content: center;
+    }
+
+    .ai-page .fashion-decoration {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .ai-page .ai-personalized-hero {
+        padding: 30px 18px;
+    }
+
+    .ai-page .hero-photo-wrapper,
+    .ai-page .hero-photo-ring {
+        width: 155px;
+        min-width: 155px;
+        height: 155px;
+    }
+
+    .ai-page .hero-photo-wrapper {
+        flex-basis: 155px;
+    }
+
+    .ai-page .hero-content h2 {
+        font-size: 24px;
+    }
 }
 
 
@@ -2140,5 +2700,524 @@
 
     .product-image-wrapper {
         height: 280px;
+    }
+}
+
+/* =========================================================
+   FINAL AI ANALYSIS LAYOUT FIX
+   Paste this at the VERY END of AIAnalysis.css
+========================================================= */
+
+
+/* =========================================================
+   MAIN RESULT CONTAINER
+========================================================= */
+
+.ai-results {
+    width: 100%;
+    max-width: 900px !important;
+    margin: 45px auto 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   RESULT HEADING
+========================================================= */
+
+.ai-results .result-heading {
+    width: 100%;
+    text-align: center;
+    margin: 0 auto 28px !important;
+}
+
+.ai-results .result-heading .ai-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #a855f7;
+}
+
+.ai-results .result-heading h2 {
+    margin: 0 0 8px !important;
+    font-size: 30px !important;
+    line-height: 1.2;
+    color: #171321;
+}
+
+.ai-results .result-heading p {
+    margin: 0;
+    color: #777;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   PERSONALIZED HERO
+========================================================= */
+
+.ai-results .ai-personalized-hero {
+    width: 100% !important;
+    max-width: 824px !important;
+    min-height: 135px !important;
+
+    margin: 0 auto 27px !important;
+    padding: 20px 25px !important;
+
+    box-sizing: border-box;
+
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+
+    gap: 20px !important;
+
+    position: relative;
+    overflow: hidden;
+
+    border-radius: 17px !important;
+
+    background:
+        radial-gradient(
+            circle at 10% 20%,
+            rgba(236, 72, 153, 0.16),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 80%,
+            rgba(139, 92, 246, 0.17),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #fff8fc 0%,
+            #fff1f9 45%,
+            #f0eaff 100%
+        ) !important;
+
+    border: 1px solid #eadff1 !important;
+
+    box-shadow:
+        0 12px 35px rgba(80, 40, 100, 0.09) !important;
+}
+
+
+/* =========================================================
+   HERO PHOTO
+========================================================= */
+
+.ai-results .hero-photo-wrapper {
+    position: relative !important;
+
+    width: 115px !important;
+    height: 115px !important;
+
+    min-width: 115px !important;
+    min-height: 115px !important;
+
+    flex: 0 0 115px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    z-index: 5 !important;
+}
+
+
+/* Pink / purple ring */
+
+.ai-results .hero-photo-ring {
+    width: 105px !important;
+    height: 105px !important;
+
+    min-width: 105px !important;
+    min-height: 105px !important;
+
+    padding: 6px !important;
+
+    box-sizing: border-box;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 50% !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ec4899,
+            #f9a8d4,
+            #a855f7
+        ) !important;
+
+    box-shadow:
+        0 8px 20px rgba(168, 85, 247, 0.20) !important;
+}
+
+
+/* THIS IS THE IMPORTANT FIX */
+
+.ai-results .hero-photo-ring img,
+.ai-results img.hero-photo {
+    width: 100% !important;
+    height: 100% !important;
+
+    min-width: 0 !important;
+    min-height: 0 !important;
+
+    max-width: none !important;
+    max-height: none !important;
+
+    display: block !important;
+
+    object-fit: cover !important;
+
+    border-radius: 50% !important;
+
+    border: 4px solid white !important;
+
+    box-sizing: border-box !important;
+}
+
+
+/* Placeholder */
+
+.ai-results .hero-photo-placeholder {
+    width: 100% !important;
+    height: 100% !important;
+
+    border-radius: 50% !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: white !important;
+
+    font-size: 35px !important;
+}
+
+
+/* =========================================================
+   HERO ARROW
+========================================================= */
+
+.ai-results .hero-arrow {
+    position: absolute !important;
+
+    right: -2px !important;
+    bottom: 3px !important;
+
+    width: 27px !important;
+    height: 27px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 50% !important;
+
+    background: white !important;
+
+    color: #9333ea !important;
+
+    font-size: 13px !important;
+
+    box-shadow:
+        0 5px 15px rgba(70, 40, 80, 0.15) !important;
+}
+
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.ai-results .hero-content {
+    position: relative !important;
+
+    z-index: 5 !important;
+
+    flex: 1 1 auto !important;
+
+    width: auto !important;
+    max-width: 480px !important;
+
+    min-width: 0 !important;
+}
+
+
+.ai-results .hero-greeting {
+    margin: 0 0 8px !important;
+
+    color: #ec4899 !important;
+
+    font-size: 13px !important;
+
+    font-weight: 700 !important;
+}
+
+
+.ai-results .hero-content h2 {
+    margin: 0 0 8px !important;
+
+    font-size: 16px !important;
+
+    line-height: 1.3 !important;
+
+    letter-spacing: 0 !important;
+
+    color: #211b2b !important;
+}
+
+
+.ai-results .hero-description {
+    max-width: 410px !important;
+
+    margin: 0 !important;
+
+    color: #555 !important;
+
+    font-size: 11px !important;
+
+    line-height: 1.5 !important;
+}
+
+
+/* =========================================================
+   HERO BADGES
+========================================================= */
+
+.ai-results .hero-badges {
+    display: flex !important;
+
+    flex-wrap: wrap !important;
+
+    gap: 7px !important;
+
+    margin-top: 11px !important;
+}
+
+
+.ai-results .hero-badge {
+    padding: 5px 9px !important;
+
+    border-radius: 20px !important;
+
+    background: rgba(255,255,255,0.9) !important;
+
+    border: 1px solid #eadff1 !important;
+
+    color: #7e22ce !important;
+
+    font-size: 9px !important;
+
+    font-weight: 800 !important;
+
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
+   FASHION DECORATION
+========================================================= */
+
+.ai-results .fashion-decoration {
+    position: absolute !important;
+
+    right: 10px !important;
+    bottom: 0 !important;
+
+    width: 180px !important;
+    height: 125px !important;
+
+    opacity: 0.85 !important;
+
+    pointer-events: none !important;
+
+    z-index: 2 !important;
+}
+
+
+/* Clothing rack */
+
+.ai-results .clothing-rack {
+    position: absolute !important;
+
+    right: 15px !important;
+    bottom: 17px !important;
+
+    width: 115px !important;
+    height: 95px !important;
+}
+
+
+/* =========================================================
+   SPARKLES
+========================================================= */
+
+.ai-results .hero-sparkle {
+    z-index: 4 !important;
+
+    font-size: 17px !important;
+}
+
+
+/* =========================================================
+   ANALYSIS CARDS
+========================================================= */
+
+.ai-results .analysis-cards {
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(4, 1fr) !important;
+
+    gap: 15px !important;
+
+    margin: 0 auto 35px !important;
+}
+
+
+.ai-results .analysis-card {
+    min-width: 0 !important;
+
+    padding: 18px 12px !important;
+
+    border-radius: 15px !important;
+
+    background: white !important;
+
+    border: 1px solid #eee5f4 !important;
+
+    box-shadow:
+        0 8px 20px rgba(70,40,80,0.06) !important;
+
+    box-sizing: border-box;
+}
+
+
+.ai-results .analysis-icon {
+    width: 45px !important;
+    height: 45px !important;
+
+    margin: 0 auto !important;
+
+    border-radius: 50% !important;
+
+    font-size: 21px !important;
+}
+
+
+.ai-results .analysis-card p {
+    margin: 10px 0 4px !important;
+
+    color: #777 !important;
+
+    font-size: 11px !important;
+}
+
+
+.ai-results .analysis-card h3 {
+    margin: 0 !important;
+
+    font-size: 15px !important;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .ai-results {
+        max-width: 94% !important;
+    }
+
+    .ai-results .ai-personalized-hero {
+        max-width: 100% !important;
+    }
+
+    .ai-results .fashion-decoration {
+        opacity: 0.35 !important;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .ai-results {
+        max-width: 94% !important;
+    }
+
+    .ai-results .result-heading h2 {
+        font-size: 26px !important;
+    }
+
+    .ai-results .ai-personalized-hero {
+        min-height: auto !important;
+
+        padding: 25px 18px !important;
+
+        flex-direction: column !important;
+
+        text-align: center !important;
+
+        gap: 15px !important;
+    }
+
+    .ai-results .hero-photo-wrapper {
+        width: 100px !important;
+        height: 100px !important;
+
+        min-width: 100px !important;
+        min-height: 100px !important;
+
+        flex-basis: 100px !important;
+    }
+
+    .ai-results .hero-photo-ring {
+        width: 92px !important;
+        height: 92px !important;
+    }
+
+    .ai-results .hero-content {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .ai-results .hero-description {
+        max-width: 100% !important;
+    }
+
+    .ai-results .hero-badges {
+        justify-content: center !important;
+    }
+
+    .ai-results .fashion-decoration {
+        display: none !important;
+    }
+
+    .ai-results .analysis-cards {
+        grid-template-columns:
+            repeat(2, 1fr) !important;
+    }
+}
+
+
+@media (max-width: 400px) {
+
+    .ai-results .analysis-cards {
+        grid-template-columns: 1fr !important;
     }
 }

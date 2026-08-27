@@ -10,6 +10,9 @@ function Cart() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    // NEW
+    const [showContinueModal, setShowContinueModal] = useState(false);
+
     const getUser = () => {
         const savedUser = localStorage.getItem("user");
 
@@ -77,11 +80,13 @@ function Cart() {
         }
     };
 
-    const buyProduct = (productUrl) => {
+    // =====================================================
+    // OPEN SELECTED REAL PRODUCT WEBSITE
+    // =====================================================
+
+    const openProduct = (productUrl) => {
         if (!productUrl) {
-            alert(
-                "Real product website link is not available."
-            );
+            alert("Real product website link is not available.");
             return;
         }
 
@@ -90,6 +95,22 @@ function Cart() {
             "_blank",
             "noopener,noreferrer"
         );
+
+        setShowContinueModal(false);
+    };
+
+    // =====================================================
+    // CONTINUE SHOPPING
+    // =====================================================
+
+    const handleContinueShopping = () => {
+        if (cart.length === 0) {
+            navigate("/products");
+            return;
+        }
+
+        // Show products from cart
+        setShowContinueModal(true);
     };
 
     if (loading) {
@@ -97,8 +118,14 @@ function Cart() {
             <div className="cart-page cart-state">
                 <div>
                     <div className="cart-icon">🛍️</div>
-                    <h2>Loading Your Shopping Bag</h2>
-                    <p>Getting your selected pieces...</p>
+
+                    <h2>
+                        Loading Your Shopping Bag
+                    </h2>
+
+                    <p>
+                        Getting your selected pieces...
+                    </p>
                 </div>
             </div>
         );
@@ -108,9 +135,18 @@ function Cart() {
         return (
             <div className="cart-page cart-state">
                 <div className="cart-message">
-                    <div className="cart-icon">🛍️</div>
-                    <h2>Your Shopping Bag</h2>
-                    <p>{error}</p>
+
+                    <div className="cart-icon">
+                        🛍️
+                    </div>
+
+                    <h2>
+                        Your Shopping Bag
+                    </h2>
+
+                    <p>
+                        {error}
+                    </p>
 
                     <button
                         className="cart-gradient-button"
@@ -118,6 +154,7 @@ function Cart() {
                     >
                         Go to Login
                     </button>
+
                 </div>
             </div>
         );
@@ -126,10 +163,14 @@ function Cart() {
     return (
         <div className="cart-page">
 
-            {/* HEADER */}
+            {/* =================================================
+                HEADER
+            ================================================= */}
+
             <section className="cart-header">
 
                 <div>
+
                     <p className="cart-eyebrow">
                         YOUR FASHION PICKS
                     </p>
@@ -144,16 +185,22 @@ function Cart() {
                         Pieces you've chosen for your
                         personal style.
                     </p>
+
                 </div>
 
                 <button
                     className="continue-top"
-                    onClick={() => navigate("/products")}
+                    onClick={handleContinueShopping}
                 >
                     ← Continue Shopping
                 </button>
 
             </section>
+
+
+            {/* =================================================
+                EMPTY CART
+            ================================================= */}
 
             {cart.length === 0 ? (
 
@@ -185,20 +232,31 @@ function Cart() {
 
                 <div className="cart-layout">
 
-                    {/* ITEMS */}
+                    {/* =================================================
+                        CART ITEMS
+                    ================================================= */}
+
                     <div className="cart-items">
 
                         <div className="cart-items-heading">
+
                             <div>
-                                <p>YOUR SELECTION</p>
+
+                                <p>
+                                    YOUR SELECTION
+                                </p>
+
                                 <h2>
                                     {cart.length}{" "}
                                     {cart.length === 1
                                         ? "Item"
                                         : "Items"}
                                 </h2>
+
                             </div>
+
                         </div>
+
 
                         {cart.map((item) => (
 
@@ -219,6 +277,7 @@ function Cart() {
 
                                 </div>
 
+
                                 <div className="cart-product-info">
 
                                     <p className="cart-category">
@@ -235,18 +294,20 @@ function Cart() {
                                         </p>
                                     )}
 
+
                                     <div className="cart-actions">
 
                                         <button
                                             className="cart-buy"
                                             onClick={() =>
-                                                buyProduct(
+                                                openProduct(
                                                     item.product_url
                                                 )
                                             }
                                         >
                                             View Product →
                                         </button>
+
 
                                         <button
                                             className="cart-remove"
@@ -269,7 +330,11 @@ function Cart() {
 
                     </div>
 
-                    {/* SUMMARY */}
+
+                    {/* =================================================
+                        SUMMARY
+                    ================================================= */}
+
                     <aside className="cart-summary">
 
                         <p className="summary-label">
@@ -282,35 +347,53 @@ function Cart() {
                             Awaits.
                         </h2>
 
+
                         <div className="summary-line">
-                            <span>Items</span>
+
+                            <span>
+                                Items
+                            </span>
+
                             <strong>
                                 {cart.length}
                             </strong>
+
                         </div>
 
+
                         <div className="summary-line">
-                            <span>Selection</span>
+
+                            <span>
+                                Selection
+                            </span>
+
                             <strong>
                                 Fashion
                             </strong>
+
                         </div>
+
 
                         <div className="summary-divider" />
 
+
                         <p className="summary-note">
-                            Prices and checkout are handled
-                            by the original product websites.
+                            Choose one of your saved
+                            fashion pieces to continue
+                            directly to its original
+                            shopping website.
                         </p>
+
+
+                        {/* IMPORTANT BUTTON */}
 
                         <button
                             className="summary-button"
-                            onClick={() =>
-                                navigate("/products")
-                            }
+                            onClick={handleContinueShopping}
                         >
                             Continue Shopping →
                         </button>
+
 
                         <button
                             className="summary-ai-button"
@@ -322,6 +405,116 @@ function Cart() {
                         </button>
 
                     </aside>
+
+                </div>
+            )}
+
+
+            {/* =====================================================
+                PRODUCT SELECTION MODAL
+            ===================================================== */}
+
+            {showContinueModal && (
+
+                <div
+                    className="continue-modal-overlay"
+                    onClick={() =>
+                        setShowContinueModal(false)
+                    }
+                >
+
+                    <div
+                        className="continue-modal"
+                        onClick={(e) =>
+                            e.stopPropagation()
+                        }
+                    >
+
+                        <button
+                            className="continue-modal-close"
+                            onClick={() =>
+                                setShowContinueModal(false)
+                            }
+                        >
+                            ×
+                        </button>
+
+
+                        <p className="continue-modal-label">
+                            CONTINUE SHOPPING
+                        </p>
+
+
+                        <h2>
+                            Choose a piece
+                            <br />
+                            to shop
+                        </h2>
+
+
+                        <p className="continue-modal-subtitle">
+                            Select one of your saved
+                            products and we'll take you
+                            directly to its original website.
+                        </p>
+
+
+                        <div className="continue-product-list">
+
+                            {cart.map((item) => (
+
+                                <button
+                                    key={item.cart_id}
+                                    className="continue-product-card"
+                                    onClick={() =>
+                                        openProduct(
+                                            item.product_url
+                                        )
+                                    }
+                                >
+
+                                    <div className="continue-product-image">
+
+                                        <img
+                                            src={
+                                                item.image_url ||
+                                                "https://via.placeholder.com/100x100?text=Fashion"
+                                            }
+                                            alt={item.name}
+                                        />
+
+                                    </div>
+
+
+                                    <div className="continue-product-info">
+
+                                        <span>
+                                            {item.brand ||
+                                                "FASHION"}
+                                        </span>
+
+                                        <strong>
+                                            {item.name}
+                                        </strong>
+
+                                        <small>
+                                            Shop this product →
+                                        </small>
+
+                                    </div>
+
+
+                                    <div className="continue-product-arrow">
+                                        →
+                                    </div>
+
+                                </button>
+
+                            ))}
+
+                        </div>
+
+                    </div>
 
                 </div>
 
